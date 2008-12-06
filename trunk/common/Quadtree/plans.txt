@@ -1,0 +1,7 @@
+implement a Move(Circle start, Circle end, T t)
+implement a Scale(Circle start, Circle end, T t)
+
+change max_depth to include the root node as depth = 1
+
+change the template param order so that the double is last, I think....
+bring the delete_empty_nodes up closer to the start
