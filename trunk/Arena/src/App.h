@@ -38,9 +38,20 @@ public:
 
 	virtual void OnExit (void);
 	virtual void OnCleanup (void);
+
 protected:
 	void Quit();
+	void PickDrawFunction();
+	void DrawPixel8(SDL_Surface*,Uint32 color, int x, int y);
+	void DrawPixel16(SDL_Surface*,Uint32 color, int x, int y);
+	void DrawPixel24_LittleEndian(SDL_Surface*,Uint32 color, int x, int y);
+	void DrawPixel24_BigEndian(SDL_Surface*,Uint32 color, int x, int y);
+	void DrawPixel32(SDL_Surface*,Uint32 color, int x, int y);
+	void DrawPixel(SDL_Surface*,Uint32 color,int x, int y);
+	virtual SDL_Surface * GetScreen()const=0;
 private:
+	typedef void (App::*DrawPixelFunc)(SDL_Surface*, Uint32 color, int x, int y);
+	DrawPixelFunc m_draw_pixel;
 	bool m_running;
 
 };

@@ -1,6 +1,12 @@
 #include "Game.h"
 #include "Defs.h"
 
+Game::Game():m_quadtree(NULL,QTNode::Square(QTVector(0,0),800)){
+}
+
+Game::~Game(){
+}
+
 bool Game::OnInit(){
 	m_screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_HWSURFACE | SDL_DOUBLEBUF  ); 
 	return true;
@@ -38,6 +44,7 @@ void Game::OnRender(){
 
   // Tell SDL to update the whole screen
   SDL_UpdateRect(m_screen, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT); 
+  SDL_Flip(m_screen);
 }
 
 void Game::OnMouseMove(int x, int y){
