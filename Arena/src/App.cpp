@@ -1,4 +1,5 @@
 #include "App.h"
+#include <cassert>
 
 
 App::App():m_running(true){
@@ -11,6 +12,8 @@ int App::Run(){
 
 	if(OnInit() == false)
 		return 1;
+
+	PickDrawFunction();
 
 	SDL_Event event;
 
@@ -26,6 +29,30 @@ int App::Run(){
 	SDL_Quit();
 
 	return 0;
+}
+
+void App::PickDrawFunction(){
+	SDL_Surface * screen = GetScreen();
+
+	switch(screen->format->BitsPerPixel){
+		case 8:
+			m_draw_pixel = &App::DrawPixel8;
+			break;
+		case 16:
+			m_draw_pixel = &App::DrawPixel16;
+			break;
+		case 24:
+			if(SDL_BYTEORDER == SDL_LIL_ENDIAN)
+				m_draw_pixel = &App::DrawPixel24_LittleEndian;
+			else
+				m_draw_pixel = &App::DrawPixel24_BigEndian;
+			break;
+		case 32:
+			m_draw_pixel = &App::DrawPixel32;
+			break;
+		default:
+			assert(0);
+	}
 }
 
 void App::ProcessEvent(SDL_Event *pEvent){
@@ -211,6 +238,48 @@ void App::OnMouseUp   (MouseButton button, int x, int y){
 
 
 void App::OnExit (void){
+}
+
+void App::DrawPixel8(SDL_Surface* screen,Uint32 color, int x, int y){
+	Uint8 *bufp;
+
+	bufp = (Uint8 *)screen->pixels + y*screen->pitch + x;
+	*bufp = color;
+}
+
+void App::DrawPixel16(SDL_Surface* screen,Uint32 color, int x, int y){
+	Uint16 *bufp;
+
+	bufp = (Uint16 *)screen->pixels + y*screen->pitch/2 + x;
+	*bufp = color;
+}
+
+void App::DrawPixel24_LittleEndian(SDL_Surface* screen,Uint32 color, int x, int y){
+	Uint8 *bufp;
+	bufp = (Uint8 *)screen->pixels + y*screen->pitch + x * 3;
+
+	bufp[0] = color;
+	bufp[1] = color >> 8;
+	bufp[2] = color >> 16;	
+}
+
+void App::DrawPixel24_BigEndian(SDL_Surface* screen,Uint32 color, int x, int y){
+	Uint8 *bufp;
+	bufp = (Uint8 *)screen->pixels + y*screen->pitch + x * 3;
+	bufp[2] = color;
+	bufp[1] = color >> 8;
+	bufp[0] = color >> 16;
+}
+
+void App::DrawPixel32(SDL_Surface* screen,Uint32 color, int x, int y){
+	Uint32 *bufp;
+
+	bufp = (Uint32 *)screen->pixels + y*screen->pitch/4 + x;
+	*bufp = color;
+}
+
+void App::DrawPixel(SDL_Surface* screen,Uint32 color, int x, int y){
+	(this->*m_draw_pixel)(screen,color,x,y);
 }
 
 void App::Quit (void){

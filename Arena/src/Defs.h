@@ -5,7 +5,7 @@
 #include "Quadtree/Geometry.hxx"
 
 const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 800;
+const int SCREEN_HEIGHT = 600;
 const int SCREEN_BPP = 32;
 
 
