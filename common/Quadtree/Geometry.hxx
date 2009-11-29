@@ -2,6 +2,7 @@
 #define QUADTREE_GEOMETRY_H
 
 #include "Definitions.hxx"
+#include <cmath>
 
 namespace Quadtree
 {
@@ -60,7 +61,7 @@ namespace Quadtree
 			{
 			}
 
-			Rect(const Square& square)
+			Rect(const Square<Scalar>& square)
 			{
 				m_center = square.GetCenter();
 				m_width = square.GetSize();
@@ -115,7 +116,7 @@ namespace Quadtree
 
 				if (my_length2 - their_length2 < ((m_radius + other.GetRadius()) * (m_radius + other.GetRadius())))
 					return true;
-				else return false; 
+				else return false;
 			}
 		private:
 			Vector<Scalar> m_center;
