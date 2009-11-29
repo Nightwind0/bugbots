@@ -200,32 +200,38 @@ int main ( int argc, char** argv )
 
         // DRAWING STARTS HERE
 
-        // clear screen
-        SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 0xFF, 0xFF, 0xFF));
+
 
 #if USE_SDL_DRAW
+        // clear screen
+        SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 0xFF, 0xFF, 0xFF));
         // draw bitmap
         SDL_BlitSurface(bmp, 0, screen, &dstrect);
 #else
         glBindTexture( GL_TEXTURE_2D, texture );
 
+      //  glTranslatef(100,100,0);
+
         glBegin( GL_QUADS );
         //Top-left vertex (corner)
-        glTexCoord2i( 0, 0 );
-        glVertex3f( 100, 100, 0.0f );
+       	glTexCoord2i( 0, 0 );
+       	glVertex3f( 0, 0, 0.0f );
 
         //Bottom-left vertex (corner)
-        glTexCoord2i( 1, 0 );
-        glVertex3f( 116, 100, 0 );
+        glTexCoord2i( 0, 1 );
+        glVertex3f( 0, 16, 0 );
 
         //Bottom-right vertex (corner)
         glTexCoord2i( 1, 1 );
-        glVertex3f( 116, 116, 0 );
+        glVertex3f( 16, 16, 0 );
 
         //Top-right vertex (corner)
-        glTexCoord2i( 0, 1 );
-        glVertex3f( 100, 116, 0 );
+        glTexCoord2i( 1, 0 );
+        glVertex3f( 16, 0, 0 );
         glEnd();
+
+        glLoadIdentity();
+
 #endif
         // DRAWING ENDS HERE
 #if !(USE_SDL_DRAW)
@@ -234,6 +240,7 @@ int main ( int argc, char** argv )
 #else
         SDL_Flip(screen);
 #endif
+        glClear( GL_COLOR_BUFFER_BIT );
     } // end main looop
 
 
