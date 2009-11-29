@@ -27,7 +27,7 @@ namespace Quadtree
 		typedef Geometry::Circle<Scalar> Circle;
 		typedef Visitor<T> OurVisitor;
 		typedef NodePool<T,max_depth,Scalar,max_object_radius,delete_empty_nodes> OurNodePool;
-        
+
 
         /**
          * @brief Creates a new node
@@ -37,10 +37,10 @@ namespace Quadtree
          * @param delete_empty_nodes Whether to automatically split
          */
 		Node(NodePtr pParent,const Square &quad);
-		
+
 
         virtual ~Node();
-  
+
         /**
          * @brief Add an object to the appropriate node at or below
          * this node
@@ -50,7 +50,7 @@ namespace Quadtree
          * @param t the object
          */
         void Add(const Circle &bounds,const T &t);
-	        
+
         /**
          * @brief Remove the object that exists at or below this node
          *
@@ -76,13 +76,13 @@ namespace Quadtree
          *
          */
         bool Intersects(const Circle &circle) const;
-        
+
         /**
          * @brief Calls the visitor on each object within the view circle
          * @return Whether to stop the traversal, as indicated by the visitor
          */
         bool Traverse(OurVisitor *pVisitor, const Circle &circle);
-        
+
 		/**
 		* @brief Calls the visitor on all objects of this node and below
 		*/
@@ -109,7 +109,7 @@ namespace Quadtree
 			// Only the root node will have the pointer, and it overrides this method
 			return m_pParent->Get_Node_Pool();
 		}
-                
+
     private:
 		// friend class TreeIterator<T>;
         typedef typename std::list<T> ObjectContainer;
@@ -187,7 +187,9 @@ namespace Quadtree
 	template <class T,unsigned int max_depth,class Scalar,int max_object_radius,bool delete_empty_nodes>
 	void NodePool<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::Prune()
 	{
-		for(std::list<NodeType*>::iterator it = m_pool.begin();
+
+
+		for(typename std::list< NodeType* >::iterator it = m_pool.begin();
 			it != m_pool.end(); it++)
 		{
 			delete *it;
@@ -226,20 +228,21 @@ namespace Quadtree
 	class RootNode: public Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>
 	{
 	public:
+        typedef Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes> OurNode;
 		typedef NodePool<T,max_depth,Scalar,max_object_radius,delete_empty_nodes> OurNodePool;
 
 		RootNode(Scalar x, Scalar y, Scalar size)
-			:Node(NULL,Square(Vector(x,y),size))
+			:OurNode(NULL,Square(Vector(x,y),size))
 		{
 		}
 
-		RootNode(const Vector &v, Scalar size)
-			:Node(NULL,Square(v,size))
+		RootNode(const Geometry::Vector<Scalar> &v, Scalar size)
+			:OurNode(NULL,Square(v,size))
 		{
 		}
 
-		RootNode(const Square &world):
-		Node(NULL,world)
+		RootNode(const Geometry::Square<Scalar> &world):
+		OurNode(NULL,world)
 		{
 		}
 
@@ -264,7 +267,7 @@ Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::Node(NodePtr pPar
 {
 
 }
- 
+
 /**
  * @brief Creates a new node
  * @param pParent Vectorer to the parent of this node
@@ -322,7 +325,7 @@ void Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::Add(const Ci
 		ptr->Add(bounds,t);
 	}
 }
-        
+
 /**
  * @brief Remove the object that exists at or below this node
  *
@@ -339,7 +342,7 @@ void Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::Remove(const
 	{
 		// Too big for my children, should be mine.
 		remove_specific(t);
-	} 
+	}
 	else
 	{
 		eQuadrant equad = which_quad(bounds.GetCenter());
@@ -365,8 +368,8 @@ bool Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::InBounds(con
 {
 	Scalar halfsize = m_quad.GetSize() / (Scalar)2;
 
-	if(abs<Scalar>(vector.GetX() - m_quad.GetCenter().GetX()) <= halfsize
-		&& abs<Scalar>(vector.GetY() - m_quad.GetCenter().GetY()) <= halfsize)
+	if(abs(vector.GetX() - m_quad.GetCenter().GetX()) <= halfsize
+		&& abs(vector.GetY() - m_quad.GetCenter().GetY()) <= halfsize)
 	{
 		return true;
 	}
@@ -384,17 +387,17 @@ bool Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::Intersects(c
 	Circle mybounds = calculate_bounds();
 	return mybounds.Intersects(circle);
 }
-        
+
 /**
  * @brief Calls the visitor on each object within the view circle
  *
  */
 template <class T,unsigned int max_depth, class Scalar, int max_object_radius, bool delete_empty_nodes>
-bool Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::Traverse(OurVisitor *visitor, 
+bool Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::Traverse(OurVisitor *visitor,
 																	 const Circle &circle)
 {
 	// First, my objects.
-	for(ObjectContainer::iterator it = m_objects.begin();
+	for(typename ObjectContainer::iterator it = m_objects.begin();
 		it != m_objects.end(); it++)
 	{
 		// Visit and determine if I should stop traversal
@@ -421,7 +424,7 @@ bool Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::empty() cons
 	return  m_objects.empty();
 }
 
-        
+
 /**
  * @brief Calls the visitor on all objects of this node and below
  */
@@ -431,7 +434,7 @@ void Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::TraverseAll(
 	for(ObjectIterator iter = m_objects.begin();
 		iter != m_objects.end(); iter++)
 	{
-		traverser->Visit(*iter);
+		visitor->Visit(*iter);
 	}
 
 	if(m_pTopleft != NULL) m_pTopleft->TraverseAll(visitor);
@@ -439,7 +442,7 @@ void Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::TraverseAll(
 	if(m_pBottomleft != NULL) m_pBottomleft->TraverseAll(visitor);
 	if(m_pBottomright != NULL) m_pBottomright->TraverseAll(visitor);
 }
-                
+
 template <class T,unsigned int max_depth, class Scalar, int max_object_radius, bool delete_empty_nodes>
 Scalar Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::calculate_diagonal_radius()const
 {
@@ -536,7 +539,7 @@ void Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::split()
 }
 
 template <class T,unsigned int max_depth, class Scalar, int max_object_radius, bool delete_empty_nodes>
-Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes> * & 
+Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes> * &
 Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::which_child(typename Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::eQuadrant quad)
 {
 	switch(quad)
@@ -556,7 +559,7 @@ Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::which_child(typen
 }
 
 template <class T,unsigned int max_depth, class Scalar, int max_object_radius, bool delete_empty_nodes>
-typename Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::eQuadrant 
+typename Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::eQuadrant
 Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::which_quad(const Vector &center)
 {
 	bool left = true;
@@ -570,7 +573,7 @@ Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::which_quad(const 
 	if(top && left) return ETOPLEFT;
 	else if(top && !left) return ETOPRIGHT;
 	else if(!top && left) return EBOTTOMLEFT;
-	else return EBOTTOMRIGHT; 
+	else return EBOTTOMRIGHT;
 }
 
 
@@ -622,7 +625,7 @@ Geometry::Square<Scalar> Node<T,max_depth,Scalar,max_object_radius,delete_empty_
 	}
 }
 
-      
+
 }
 
 
