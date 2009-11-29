@@ -19,6 +19,15 @@ const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 const int SCREEN_DEPTH = 32;
 
+/* Rotation about a point
+if (rotation)
+{
+	glTranslatef(point.x, point.y, 0);
+	glRotatef(rotation, 0.0f, 0.0f, 1.0f);
+	glTranslatef(-point.x, -point.y, 0);
+}
+*/
+
 SDL_Surface *load_image( const std::string& filename )
 {
     //The image that's loaded
@@ -104,9 +113,12 @@ GLuint bind_texture ( SDL_Surface* surface )
 
 bool initGL()
 {
-    glClearColor( 0, 0, 0, 0 );
+    glClearColor( 0x0, 0x0, 0x0, 0 );
 
     glEnable( GL_TEXTURE_2D );
+
+    glEnable (GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //Set projection
     glMatrixMode( GL_PROJECTION );
@@ -127,6 +139,9 @@ bool initGL()
 
 int main ( int argc, char** argv )
 {
+    Quadtree::Geometry::Vector<double> center(0.0f,0.0f);
+    Quadtree::Geometry::Square<double> world(center,1000.0f);
+    Quadtree::Node<int> tree(NULL,world);
     // initialize SDL video
     if ( SDL_Init( SDL_INIT_VIDEO ) < 0 )
     {
@@ -163,6 +178,7 @@ int main ( int argc, char** argv )
     }
 
     GLuint texture = bind_texture(bmp);
+    glBindTexture( GL_TEXTURE_2D, texture );
 
 #if USE_SDL_DRAW
     // centre the bitmap on screen
@@ -173,6 +189,7 @@ int main ( int argc, char** argv )
 #endif
     // program main loop
     bool done = false;
+    int rotation = 0;
     while (!done)
     {
         // message processing loop
@@ -208,29 +225,42 @@ int main ( int argc, char** argv )
         // draw bitmap
         SDL_BlitSurface(bmp, 0, screen, &dstrect);
 #else
-        glBindTexture( GL_TEXTURE_2D, texture );
 
-      //  glTranslatef(100,100,0);
+        glTranslatef(100,200,0);
+        glRotatef ( rotation, 0.0f, 0.0f, 1.0f );
+        //glTranslatef(-16,-16,0);
+
+        GLfloat width, height;
+        GLfloat scale = 1.0f + rotation / 90.0f;
+        width = 16.0f * scale;
+        height = 16.0f * scale;
+
+
 
         glBegin( GL_QUADS );
         //Top-left vertex (corner)
        	glTexCoord2i( 0, 0 );
-       	glVertex3f( 0, 0, 0.0f );
+       	glVertex3f( -width * 0.5f, height*0.5f, 0.0f );
 
         //Bottom-left vertex (corner)
         glTexCoord2i( 0, 1 );
-        glVertex3f( 0, 16, 0 );
+        glVertex3f( - width * 0.5f, - height * 0.5f, 0.0f );
 
         //Bottom-right vertex (corner)
         glTexCoord2i( 1, 1 );
-        glVertex3f( 16, 16, 0 );
+        glVertex3f( width * 0.5f, - height * 0.5f, 0.0f );
 
         //Top-right vertex (corner)
         glTexCoord2i( 1, 0 );
-        glVertex3f( 16, 0, 0 );
+        glVertex3f( width * 0.5f, height * 0.5f, 0.0f );
         glEnd();
 
         glLoadIdentity();
+
+
+        rotation +=2 ;
+
+        rotation = rotation % 360;
 
 #endif
         // DRAWING ENDS HERE
