@@ -209,11 +209,12 @@
 	"Definitions.hxx"
 	<cmath>
 
-1259459406 source:/home/dpalm/src/bugbots/trunk/Evolution/BugBots Evolution/src/main.cpp
+1259469012 source:/home/dpalm/src/bugbots/trunk/Evolution/BugBots Evolution/src/main.cpp
 	<cstdlib>
 	<stdlib.h>
 	<SDL/SDL.h>
 	<SDL.h>
+	"SDL/SDL_opengl.h"
 	<string>
 	"SDL/SDL_image.h"
 	"Quadtree/Quadtree.hxx"
