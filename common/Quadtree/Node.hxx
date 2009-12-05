@@ -81,12 +81,12 @@ namespace Quadtree
          * @brief Calls the visitor on each object within the view circle
          * @return Whether to stop the traversal, as indicated by the visitor
          */
-        bool Traverse(OurVisitor *pVisitor, const Circle &circle);
+        bool Traverse(OurVisitor *pVisitor, const Circle &circle) const;
 
 		/**
 		* @brief Calls the visitor on all objects of this node and below
 		*/
-        void TraverseAll(OurVisitor &visitor);
+        void TraverseAll(OurVisitor &visitor) const;
 
 		/**
 		* @brief Create all child nodes under this node, even if they will be empty
@@ -394,7 +394,7 @@ bool Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::Intersects(c
  */
 template <class T,unsigned int max_depth, class Scalar, int max_object_radius, bool delete_empty_nodes>
 bool Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::Traverse(OurVisitor *visitor,
-																	 const Circle &circle)
+																	 const Circle &circle) const
 {
 	// First, my objects.
 	for(typename ObjectContainer::iterator it = m_objects.begin();
@@ -429,7 +429,7 @@ bool Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::empty() cons
  * @brief Calls the visitor on all objects of this node and below
  */
 template <class T,unsigned int max_depth, class Scalar, int max_object_radius, bool delete_empty_nodes>
-void Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::TraverseAll(OurVisitor &visitor)
+void Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::TraverseAll(OurVisitor &visitor) const
 {
 	for(ObjectIterator iter = m_objects.begin();
 		iter != m_objects.end(); iter++)
@@ -483,11 +483,7 @@ void Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::add_specific
 template <class T,unsigned int max_depth, class Scalar, int max_object_radius, bool delete_empty_nodes>
 void Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::remove_specific(const T& t)
 {
-	ObjectIterator iter = m_objects.remove(t);
-
-	if(iter != m_objects.end())
-		m_objects.erase(iter);
-	else assert(0 && "Couldn't find an object that should have been in this node.");
+	m_objects.remove(t);
 }
 template <class T,unsigned int max_depth, class Scalar, int max_object_radius, bool delete_empty_nodes>
 void Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::Split()
