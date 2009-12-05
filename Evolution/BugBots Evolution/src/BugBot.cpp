@@ -10,8 +10,6 @@ void BugBot::LoadResources(){
     SDL_Surface* blue = load_image("res/icon/bb_blue.png");
     SDL_Surface* red = load_image("res/icon/bb_red.png");
 
-
-// CRAAAAAAAAAP: Have to do this only once, duh
     m_textures[ BUGBOT_BLUE ] = bind_texture ( blue );
     m_textures[ BUGBOT_RED ] = bind_texture ( red );
 }

@@ -105,7 +105,7 @@ int main ( int argc, char** argv )
 #endif
     // program main loop
     bool done = false;
-    int rotation = 0;
+
     while (!done)
     {
         // message processing loop

@@ -27,7 +27,8 @@ namespace BugBots
         void SetAlignment ( Alignment alignment );
         Alignment GetAlignment() const;
 
-        virtual Position GetPosition() const;
+        virtual Position GetOrigin() const;
+        virtual double GetRadius() const;
         virtual void HandleCollision ( WorldObject &other );
 
         virtual void Draw(float x, float y, float scale=1.0f, float rotation = 0.0f);
@@ -45,8 +46,11 @@ namespace BugBots
     inline Alignment BugBot::GetAlignment ( ) const {
         return m_alignment;
     }
-    inline Position BugBot::GetPosition() const{
+    inline Position BugBot::GetOrigin() const{
         return m_pos;
+    }
+    inline double BugBot::GetRadius() const{
+        return BUGBOT_RADIUS;
     }
 
 }
