@@ -1,4 +1,5 @@
 #include "World.h"
+#include <cassert>
 
 using BugBots::World;
 using BugBots::WorldObject;
@@ -13,4 +14,34 @@ World::World():m_quadtree(NULL,
 
 World::~World()
 {
+}
+
+
+void World::AddObject ( WorldObject* object){
+    assert ( object );
+
+    Quadtree::Geometry::Circle<double> circle(
+        object->GetOrigin(),
+        object->GetRadius() );
+
+    m_quadtree.Add ( circle, object );
+
+}
+
+
+void World::RemoveObject ( WorldObject* object ){
+    assert ( object );
+
+    Quadtree::Geometry::Circle<double> circle(
+        object->GetOrigin(),
+        object->GetRadius() );
+
+    m_quadtree.Remove ( circle, object );
+}
+
+void World::HandleObjectMovement ( WorldObject* object){
+    assert ( object );
+
+    RemoveObject ( object );
+    AddObject ( object );
 }

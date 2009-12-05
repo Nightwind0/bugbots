@@ -10,5 +10,7 @@ namespace BugBots {
     };
 
     const double WORLD_SIZE = 1000.0f;
+
+    const double BUGBOT_RADIUS = 1.0f;
 }
 #endif // CONSTANTS_H_INCLUDED

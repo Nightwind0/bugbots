@@ -12,10 +12,16 @@ namespace BugBots{
         ~World();
 
 
-
+        void AddObject ( WorldObject* );
+        void RemoveObject ( WorldObject* );
+        void HandleObjectMovement ( WorldObject * );
 
         private:
+
+
+
         Quadtree::Node<WorldObject*> m_quadtree;
+
 
     };
 }

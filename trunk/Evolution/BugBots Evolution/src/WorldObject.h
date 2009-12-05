@@ -9,7 +9,8 @@ namespace BugBots{
         WorldObject(){}
         virtual ~WorldObject(){}
 
-        virtual Position GetPosition() const=0;
+        virtual Position GetOrigin() const=0;
+        virtual double GetRadius() const=0;
         // Used by the World to notify of collisions between other objects
         virtual void HandleCollision ( WorldObject &other )=0;
 
