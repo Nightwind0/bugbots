@@ -6,8 +6,8 @@
 namespace BugBots{
     class WorldObject{
         public:
-        WorldObject();
-        virtual ~WorldObject();
+        WorldObject(){}
+        virtual ~WorldObject(){}
 
         virtual Position GetPosition() const=0;
         // Used by the World to notify of collisions between other objects
