@@ -3,6 +3,7 @@
 
 #include "Constants.h"
 #include "Quadtree/Quadtree.hxx"
+#include "Quadtree/Visitor.hxx"
 #include "WorldObject.h"
 
 namespace BugBots{
@@ -15,6 +16,9 @@ namespace BugBots{
         void AddObject ( WorldObject* );
         void RemoveObject ( WorldObject* );
         void HandleObjectMovement ( WorldObject * );
+
+        void TraverseAllObjects ( Quadtree::Visitor<WorldObject*>& visitor ) const;
+        void TraverseObjects ( Quadtree::Visitor<WorldObject*>& visitor, const Quadtree::Geometry::Circle<double> &circle )const;
 
         private:
 

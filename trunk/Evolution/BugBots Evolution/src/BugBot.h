@@ -2,7 +2,6 @@
 #define __BB_BUGBOT_H_
 
 #include <map>
-#include "Displayable.h"
 #include "Constants.h"
 #include "Position.h"
 #include "WorldObject.h"
@@ -10,7 +9,7 @@
 namespace BugBots
 {
 
-    class BugBot : public Displayable, public WorldObject
+    class BugBot : public WorldObject
     {
     public:
         BugBot();
