@@ -1,16 +1,9 @@
-#include "Displayable.h"
-#include "SDL/SDL_image.h"
 
-using BugBots::Displayable;
+#include "WorldObject.h"
 
+using BugBots::WorldObject;
 
-Displayable::Displayable(){
-}
-
-Displayable::~Displayable(){
-}
-
-SDL_Surface *Displayable::load_image( const std::string& filename )
+SDL_Surface *WorldObject::load_image( const std::string& filename )
 {
     //The image that's loaded
     SDL_Surface* loadedImage = NULL;
@@ -30,7 +23,7 @@ SDL_Surface *Displayable::load_image( const std::string& filename )
     return optimizedImage;
 }
 
-GLuint Displayable::bind_texture ( SDL_Surface* surface )
+GLuint WorldObject::bind_texture ( SDL_Surface* surface )
 {
     GLenum texture_format;
     GLuint texture;

@@ -12,9 +12,12 @@ namespace BugBots {
         ~View();
 
 
-
+        void DrawWorld ( void );
 
         private:
+
+        void draw_objects();
+
         const World& m_world;
     };
 
