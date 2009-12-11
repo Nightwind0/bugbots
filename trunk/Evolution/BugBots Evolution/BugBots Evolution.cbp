@@ -29,14 +29,28 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="`sdl-config --cflags`" />
 			<Add option="-Wall" />
+			<Add option="`sdl-config --cflags`" />
+			<Add directory="../../common" />
 		</Compiler>
 		<Linker>
 			<Add option="`sdl-config --libs`" />
+			<Add library="SDL_image" />
+			<Add library="GL" />
+			<Add library="GLU" />
+			<Add directory="../../common" />
 		</Linker>
-		<Unit filename="cb.bmp" />
-		<Unit filename="main.cpp" />
+		<Unit filename="src/BugBot.cpp" />
+		<Unit filename="src/BugBot.h" />
+		<Unit filename="src/Constants.h" />
+		<Unit filename="src/Position.h" />
+		<Unit filename="src/View.cpp" />
+		<Unit filename="src/View.h" />
+		<Unit filename="src/World.cpp" />
+		<Unit filename="src/World.h" />
+		<Unit filename="src/WorldObject.cpp" />
+		<Unit filename="src/WorldObject.h" />
+		<Unit filename="src/main.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

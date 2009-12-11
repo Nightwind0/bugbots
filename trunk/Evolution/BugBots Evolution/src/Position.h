@@ -7,6 +7,9 @@ namespace BugBots
 {
     // Represents a position in the game world
     struct Position{
+        Position():m_x(0.0),m_y(0.0){}
+        Position(double x, double y):m_x(x),m_y(y){
+        }
         double m_x;
         double m_y;
         operator Quadtree::Geometry::Vector<double> () const{

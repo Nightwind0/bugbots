@@ -24,7 +24,7 @@ namespace BugBots{
 
 
 
-        Quadtree::Node<WorldObject*> m_quadtree;
+        Quadtree::RootNode<WorldObject*> m_quadtree;
 
 
     };
