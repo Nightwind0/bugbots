@@ -27,6 +27,7 @@ View::~View(){
 
 
 void View::DrawWorld ( void ){
+    draw_objects();
 }
 
 void View::draw_objects ( void ) {

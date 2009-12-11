@@ -25,6 +25,7 @@ namespace BugBots
 
         void SetAlignment ( Alignment alignment );
         Alignment GetAlignment() const;
+        void SetPosition ( const Position& pos);
 
         virtual Position GetOrigin() const;
         virtual double GetRadius() const;
@@ -50,6 +51,10 @@ namespace BugBots
     }
     inline double BugBot::GetRadius() const{
         return BUGBOT_RADIUS;
+    }
+
+    inline void BugBot::SetPosition ( const Position& pos ){
+        m_pos = pos;
     }
 
 }

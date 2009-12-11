@@ -16,6 +16,8 @@
 #include "Quadtree/Quadtree.hxx"
 #include "BugBot.h"
 #include "Constants.h"
+#include "World.h"
+#include "View.h"
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
@@ -59,9 +61,7 @@ bool initGL()
 
 int main ( int argc, char** argv )
 {
-    Quadtree::Geometry::Vector<double> center(0.0f,0.0f);
-    Quadtree::Geometry::Square<double> world(center,1000.0f);
-    Quadtree::Node<int> tree(NULL,world);
+
     // initialize SDL video
     if ( SDL_Init( SDL_INIT_VIDEO ) < 0 )
     {
@@ -95,6 +95,16 @@ int main ( int argc, char** argv )
     blue.SetAlignment ( BugBots::BLUE_TEAM );
     red.SetAlignment ( BugBots::RED_TEAM );
 
+    blue.SetPosition ( BugBots::Position(50,100) );
+    red.SetPosition ( BugBots::Position(400,200) );
+
+    BugBots::World world;
+
+    world.AddObject ( &blue );
+    world.AddObject ( &red );
+
+
+    BugBots::View view(world);
 
 #if USE_SDL_DRAW
     // centre the bitmap on screen
@@ -132,8 +142,7 @@ int main ( int argc, char** argv )
         } // end of message processing
 
         // DRAWING STARTS HERE
-        blue.Draw(50,50);
-        red.Draw(200,80);
+        view.DrawWorld();
 
 
 #if USE_SDL_DRAW
