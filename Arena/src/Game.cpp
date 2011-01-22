@@ -1,18 +1,65 @@
 #include "Game.h"
 #include "Defs.h"
+#include "GameObject.h"
+#include "MainBrain.h"
+#include <sys/time.h>
 
-Game::Game():m_quadtree(NULL,QTNode::Square(QTVector(0,0),800)){
+using namespace BugBots;
+
+
+class Updater : public Quadtree::Visitor<BugBots::GameObject*,BugBots::QTNode>
+{
+public:
+    virtual bool Visit(BugBots::GameObject* object,const BugBots::QTNode* node){
+	object->Update();
+	return true;
+    }
+};
+
+template <class T>
+class Drawer : public Quadtree::Visitor<BugBots::GameObject*,BugBots::QTNode>
+{
+public:
+    typedef void (T::*DrawFunctor)(BugBots::Color, int, int);
+    Drawer(T* pApp,DrawFunctor functor):m_pApp(pApp),m_functor(functor){
+	
+    }
+    
+    virtual bool Visit(BugBots::GameObject* object,const BugBots::QTNode* node){
+	BugBots::Color color = object->GetColor();
+	BugBots::QTVector pos = object->GetPos();
+	(m_pApp->*m_functor)(color, pos.GetX(),pos.GetY());
+	return true;
+    }
+private:
+   T* m_pApp;
+   DrawFunctor m_functor;
+};
+
+Game::Game():m_quadtree(BugBots::QTNode::Square(BugBots::QTVector(0,0),800)){
 }
 
 Game::~Game(){
 }
 
+void Game::add_game_object(GameObject* pObject)
+{
+    QTCircle circle(pObject->GetPos(),0);
+    m_quadtree.Add(circle,pObject);
+}
+
 bool Game::OnInit(){
 	m_screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_HWSURFACE | SDL_DOUBLEBUF  ); 
+	srand(time(NULL));
+	MainBrain * brain = new MainBrain();
+	brain->SetPos(QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT));
+	add_game_object(brain);
 	return true;
 }
 
 void Game::OnLoop(){
+    Updater updater;
+    m_quadtree.TraverseAll(updater);
 }
 
 void Game::OnRender(){
@@ -25,7 +72,8 @@ void Game::OnRender(){
   int tick = SDL_GetTicks();
 
   // Draw to screen
-
+  Drawer<Game> drawer(this,&Game::DrawPixel);
+  m_quadtree.TraverseAll(drawer);
 
   // Unlock if needed
   if (SDL_MUSTLOCK(m_screen)) 
