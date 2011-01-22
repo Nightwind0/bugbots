@@ -31,10 +31,16 @@ protected:
 	virtual SDL_Surface * GetScreen()const{
 		return m_screen;
 	}
+	void add_game_object(BugBots::GameObject* pObject);
 
 private:
+    
+	void DrawPixel(BugBots::Color color, int x, int y){
+	    Uint32 c = SDL_MapRGBA(m_screen->format,color.r,color.g,color.b,color.a);	    
+	    App::DrawPixel(m_screen,c,x,y);
+	}
 	SDL_Surface* m_screen;
-	QTNode m_quadtree;
+	BugBots::QTRootNode m_quadtree;
 };
 
 #endif

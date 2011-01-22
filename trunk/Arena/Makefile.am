@@ -13,7 +13,17 @@ bba_SOURCES = \
 		src/App.h \
 		src/Defs.h \
 		src/Game.cpp \
-		src/Game.h
+		src/Game.h \
+		src/GameObject.cpp \
+		src/GameObject.h \
+		src/BugBot.cpp \
+		src/BugBot.h \
+		src/MainBrain.cpp \
+		src/MainBrain.h \
+		src/Utilities.cpp \
+		src/Utilities.h \
+		src/Food.cpp \
+		src/Food.h
 
 
 
