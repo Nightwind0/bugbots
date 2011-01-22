@@ -69,7 +69,7 @@ namespace Quadtree
          * @param t the object that is moving
          * @param newpos where the object is moving to
          */
-        void MoveObject(const T &t, const Vector& current_pos,const Vector& newpos);
+        void MoveObject(const T &t, const Circle& current_pos,const Circle& newpos);
 
         /**
          * @brief The maximum size object this node will contain
@@ -294,7 +294,7 @@ namespace Quadtree
     Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::Node(NodePtr pParent,
             const Geometry::Square<Scalar> &quad)
             :m_pParent(pParent),m_pTopleft(NULL),m_pTopright(NULL),
-            m_pBottomleft(NULL),m_pBottomright(NULL),m_quad(quad)
+            m_pBottomleft(NULL),m_pBottomright(NULL),m_quad(quad),m_bNoRemovals(false)
     {
 
     }
@@ -378,8 +378,9 @@ namespace Quadtree
 
         Scalar radius = bounds.GetRadius();
         Scalar myradius = GetMaxObjectRadius();
+	int depth = calculate_depth();
 
-        if (radius  / (Scalar)2 > myradius)
+        if (depth == max_depth || radius  / (Scalar)2 > myradius)
         {
             // Too big for my children, should be mine.
             remove_specific(t);
@@ -494,8 +495,10 @@ namespace Quadtree
      * @param newpos where the object is moving to
      */
     template <class T,unsigned int max_depth, class Scalar, int max_object_radius, bool delete_empty_nodes>
-    void Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::MoveObject(const T& t, const Vector& current_pos,const Vector& newpos)
+    void Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::MoveObject(const T& t, const Circle& current_pos,const Circle& newpos)
     {
+	Remove(current_pos,t);
+	Add(newpos,t);
     }
 
 
