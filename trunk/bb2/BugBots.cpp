@@ -354,7 +354,7 @@ bool BugBot::BotInPath(Position pos)
 {
     const bool can = IsCannibal();
     const bool ren = IsRenegade();
-    const bool food = HasItem();
+    //const bool food = HasItem();
     const bool hungry = IsHungry();
     const bool starving = IsStarving();
     const std::list<BugBot>::iterator BotIt = MH.GetBugBotAt(pos);
@@ -740,6 +740,7 @@ bool BugBot::Attack(int bot)
 	    return true;
 	}
     }
+	return false;
 }
 
 void BugBot::Eat(Item item)
