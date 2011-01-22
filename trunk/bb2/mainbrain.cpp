@@ -9,6 +9,7 @@
 #include "MapHandler.h"
 #include "soundmanager.h"
 
+
 extern MapHandler MH;
 
 const extern int SCREENHEIGHT;
@@ -92,8 +93,8 @@ bool MainBrain::Feed(int bot)
      int BotHealth = (*i).GetHealth();
      if(CanFeed(BotHealth))
      {
-	  (*i).FoodFromGod(1000-BotHealth);
-	  m_resources -= (1000-BotHealth);
+	  (*i).FoodFromGod(BugBotHealth-BotHealth);
+	  m_resources -= (BugBotHealth-BotHealth);
 	  return true;
      }
      return false;
@@ -101,7 +102,7 @@ bool MainBrain::Feed(int bot)
 
 bool MainBrain::CanFeed(int bothealth)
 {
-     if(m_resources - (1000-bothealth) >= 0)
+     if(m_resources - (BugBotHealth-bothealth) >= 0)
      {
 	  return true;
      }
@@ -314,7 +315,7 @@ Position MainBrain::GetTargetPos(const Position &current_pos)
 void MainBrain::CreateBugBot()
 {
 
-     if(m_resources > 1000)
+     if(m_resources > BugBotHealth)
      {
 
 		SoundManager *manager = SoundManager::GetInstance();
@@ -325,7 +326,7 @@ void MainBrain::CreateBugBot()
 	  
 	  m_bugbots.push_back((*MH.NewBugBot(m_me,pos)).GetMe());
 	  
-	  m_resources-=1000;
+	  m_resources-=BugBotHealth;
 	  
      }
 }
