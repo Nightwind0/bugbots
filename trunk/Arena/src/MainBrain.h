@@ -26,10 +26,15 @@ namespace BugBots{
 
 class MainBrain : public BugBots::GameObject
 {
-
 public:
+    MainBrain(const Team& team);
     virtual Color GetColor() const;
     virtual void Update();
+private:
+    void spawn_bugbot();
+    Color  m_color;
+    Team m_team;   
+    int m_resources;
 };
 
 };

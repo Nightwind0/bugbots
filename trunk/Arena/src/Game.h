@@ -32,9 +32,13 @@ protected:
 		return m_screen;
 	}
 	void add_game_object(BugBots::GameObject* pObject);
+	void move_game_object(BugBots::GameObject* pObject, const BugBots::QTVector& new_pos);
+	void remove_game_object(BugBots::GameObject* pObject);
+	void traverse_circle(const BugBots::QTCircle& circle, BugBots::QTNode::OurVisitor& visitor );
+	void scan_area(const BugBots::QTCircle& circle, std::list<BugBots::GameObject*> & bucket );
 
 private:
-    
+	friend class BugBots::GameObject;
 	void DrawPixel(BugBots::Color color, int x, int y){
 	    Uint32 c = SDL_MapRGBA(m_screen->format,color.r,color.g,color.b,color.a);	    
 	    App::DrawPixel(m_screen,c,x,y);

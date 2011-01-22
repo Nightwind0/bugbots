@@ -27,10 +27,36 @@ BugBots::Color Utilities::CreateColor(float r, float g, float b, float a)
 {
     //return BugBots::Color{(char)r*255,(char)g*255,(char)b*255,(char)a*255};
     BugBots::Color color;
-    color.r = (char)r*255;
-    color.g = (char)g*255;
-    color.b = (char)b*255;
-    color.a = (char)a*255;
+    color.r = (unsigned char)(r*255.0);
+    color.g = (unsigned char)(g*255.0);
+    color.b = (unsigned char)(b*255.0);
+    color.a = (unsigned char)(a*255.0);
     
     return color;
 }
+
+BugBots::Color Utilities::DefaultTeamColor (const Team& team)
+{
+    // Stupid for now. Later this will be data driven
+    switch(team){
+	case TEAM_BLUE:
+	    return CreateColor(0,0,0.75);
+	case TEAM_RED:
+	    return CreateColor(0.75,0,0);
+	default:
+	    assert(0);
+	    return CreateColor(0,0,0);
+    }
+}
+
+int Utilities::GetConfig(eConfigValue config)
+{
+    switch(config)
+    {
+	case BUGBOT_COST:
+	    return 50;
+	case INITIAL_RESOURCES:
+	    return 1000;
+    }
+}
+

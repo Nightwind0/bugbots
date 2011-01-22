@@ -3,21 +3,36 @@
 #include "GameObject.h"
 #include "MainBrain.h"
 #include <sys/time.h>
+#include <list>
 
 using namespace BugBots;
 
-
-class Updater : public Quadtree::Visitor<BugBots::GameObject*,BugBots::QTNode>
+class Scanner : public QTNode::OurVisitor
 {
 public:
+    Scanner(std::list<GameObject*> &bucket):m_bucket(bucket){
+    }
+    
     virtual bool Visit(BugBots::GameObject* object,const BugBots::QTNode* node){
-	object->Update();
+	m_bucket.push_back(object);
 	return true;
     }
+private:
+    std::list<GameObject*>& m_bucket;
 };
 
+
+// class Updater : public QTNode::OurVisitor
+// {
+// public:
+//     virtual bool Visit(BugBots::GameObject* object,const BugBots::QTNode* node){
+// 	object->Update();
+// 	return true;
+//     }
+// };
+
 template <class T>
-class Drawer : public Quadtree::Visitor<BugBots::GameObject*,BugBots::QTNode>
+class Drawer : public QTNode::OurVisitor
 {
 public:
     typedef void (T::*DrawFunctor)(BugBots::Color, int, int);
@@ -44,22 +59,59 @@ Game::~Game(){
 
 void Game::add_game_object(GameObject* pObject)
 {
-    QTCircle circle(pObject->GetPos(),0);
+    QTCircle circle(pObject->GetPos(),kGameObjectRadius);
     m_quadtree.Add(circle,pObject);
 }
+
+void Game::move_game_object(BugBots::GameObject* pObject, const QTVector& new_pos)
+{
+    m_quadtree.MoveObject(pObject,QTCircle(pObject->GetPos(),kGameObjectRadius),QTCircle(new_pos,kGameObjectRadius));
+//   m_quadtree.Remove(QTCircle(pObject->GetPos(),kGameObjectRadius),pObject);
+//   m_quadtree.Add(QTCircle(new_pos,kGameObjectRadius),pObject);
+    pObject->SetPos(new_pos);
+}
+
+void Game::remove_game_object(BugBots::GameObject* pObject)
+{
+    m_quadtree.Remove(QTCircle(pObject->GetPos(),kGameObjectRadius),pObject);
+}
+
+void Game::traverse_circle(const QTCircle& circle, QTNode::OurVisitor& visitor )
+{
+    m_quadtree.Traverse(visitor,circle);
+}
+
+void Game::scan_area(const BugBots::QTCircle& circle, std::list<GameObject*> & bucket )
+{
+    Scanner scanner(bucket);
+    m_quadtree.Traverse(scanner,circle);
+}
+
 
 bool Game::OnInit(){
 	m_screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_HWSURFACE | SDL_DOUBLEBUF  ); 
 	srand(time(NULL));
-	MainBrain * brain = new MainBrain();
-	brain->SetPos(QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT));
-	add_game_object(brain);
+	MainBrain * blue_brain = new MainBrain(TEAM_BLUE);
+	MainBrain * red_brain = new MainBrain(TEAM_RED);
+	blue_brain->SetPos(QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT));
+	red_brain->SetPos(QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT));
+	add_game_object(blue_brain);
+	add_game_object(red_brain);
 	return true;
 }
 
 void Game::OnLoop(){
-    Updater updater;
-    m_quadtree.TraverseAll(updater);
+    std::list<GameObject*> objects;
+    Scanner scanner(objects);
+    m_quadtree.TraverseAll(scanner);
+    
+    
+    for(std::list<GameObject*>::iterator iter = objects.begin();
+	iter != objects.end(); iter++)
+	{
+	    (*iter)->Update();
+	}
+	
 }
 
 void Game::OnRender(){
@@ -71,6 +123,7 @@ void Game::OnRender(){
   // Ask SDL for the time in milliseconds
   int tick = SDL_GetTicks();
 
+  SDL_FillRect( m_screen, &m_screen->clip_rect, SDL_MapRGB( m_screen->format, 0x0, 0x0, 0x0 ) ); 
   // Draw to screen
   Drawer<Game> drawer(this,&Game::DrawPixel);
   m_quadtree.TraverseAll(drawer);
