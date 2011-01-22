@@ -20,7 +20,7 @@
 #ifndef FOOD_H
 #define FOOD_H
 
-#include <src/GameObject.h>
+#include "GameObject.h"
 
 namespace BugBots{
     

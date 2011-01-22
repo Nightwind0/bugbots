@@ -30,10 +30,19 @@ public:
     GameObject();
     virtual ~GameObject();
     
-    void SetPos(const QTVector& );
+    void Destroy(); // Remove from the game
+    void MoveTo(const QTVector& );
+
     QTVector GetPos() const;
     virtual Color GetColor() const=0;
     virtual void Update()=0;
+    
+    // To be called by the Game only.
+    // Everyone else call MoveTo
+    void SetPos(const QTVector& );
+protected:
+    void scan(const QTCircle& area, std::list<GameObject*>& bucket);
+    void spawn(GameObject * pObject, const QTVector& pos);
 private:
     QTVector m_pos;    
 };

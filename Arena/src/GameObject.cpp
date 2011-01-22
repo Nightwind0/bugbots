@@ -18,6 +18,7 @@
 */
 
 #include "GameObject.h"
+#include "Game.h"
 
 using BugBots::GameObject;
 
@@ -27,6 +28,31 @@ GameObject::GameObject():m_pos(0,0)
 
 GameObject::~GameObject()
 {
+}
+
+void GameObject::Destroy()
+{
+    Game* game = dynamic_cast<Game*>(GetApp());
+    game->remove_game_object(this);
+}
+
+void GameObject::MoveTo(const QTVector& pos)
+{
+    Game* game = dynamic_cast<Game*>(GetApp());
+    game->move_game_object(this,pos);
+}
+
+void GameObject::scan(const QTCircle& area, std::list<GameObject*>& bucket)
+{
+    Game* game = dynamic_cast<Game*>(GetApp());
+    game->scan_area(area,bucket);
+}
+
+void GameObject::spawn(GameObject * pObject, const QTVector& pos)
+{
+    Game* game = dynamic_cast<Game*>(GetApp());
+    pObject->SetPos(pos);
+    game->add_game_object(pObject);
 }
 
 void GameObject::SetPos(const QTVector& pos)

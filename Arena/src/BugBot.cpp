@@ -18,10 +18,12 @@
 */
 
 #include "BugBot.h"
+#include "Utilities.h"
 
-using BugBots::BugBot;
+using namespace BugBots;
 
-BugBot::BugBot()
+
+BugBot::BugBot(const Team& team):m_team(team),m_goal(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT)
 {
 }
 
@@ -30,19 +32,27 @@ BugBot::~BugBot()
 }
 
 
-void BugBot::SetColor(const Color& color)
-{
-    m_color = color;
-}
 
 BugBots::Color BugBot::GetColor() const
 {
-    return m_color;
+    return Utilities::DefaultTeamColor(m_team);
 }
 
 void BugBot::Update()
 {
-
+    QTVector pos = GetPos();
+    
+    // Dead Stupid AI
+    if(pos.GetX() > m_goal.GetX()){
+	MoveTo(QTVector(pos.GetX()-1,pos.GetY()));
+    }else if(pos.GetX() < m_goal.GetX()){
+	MoveTo(QTVector(pos.GetX()+1,pos.GetY()));
+    }else if(pos.GetY() < m_goal.GetY()){
+	MoveTo(QTVector(pos.GetX(),pos.GetY()+1));
+    }else if(pos.GetY() > m_goal.GetY()){
+	MoveTo(QTVector(pos.GetX(),pos.GetY()-1));
+    }
+    
 }
 
 

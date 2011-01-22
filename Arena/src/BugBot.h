@@ -27,13 +27,13 @@ namespace BugBots {
 class BugBot : public BugBots::GameObject
 {
 public:
-    BugBot();
+    BugBot(const Team& team);
     virtual ~BugBot();
-    void SetColor(const Color& color);
     virtual Color GetColor() const;
     virtual void Update();
 private:
-    Color m_color;
+    Team m_team;
+    QTVector m_goal;
 };
 
 }

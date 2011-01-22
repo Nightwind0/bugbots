@@ -3,9 +3,8 @@ bin_PROGRAMS = bba
 
 bba_LIBS = sdl
 
-bba_CPPFLAGS = $(SDL_CFLAGS) \
-			$(CPPFLAGS)
-bba_CFLAGS = $(SDL_CFLAGS) 
+bba_CPPFLAGS = 	$(BBA_CPPFLAGS)
+bba_CFLAGS = $(BBA_CPPFLAGS) 
 
 bba_SOURCES = \
 		src/Main.cpp \

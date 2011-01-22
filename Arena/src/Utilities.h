@@ -28,7 +28,13 @@ namespace BugBots {
 class Utilities
 {
 public:
+    enum eConfigValue {
+	BUGBOT_COST,
+	INITIAL_RESOURCES
+    };
     static Color CreateColor(float r, float g, float b, float a=0.0);
+    static Color DefaultTeamColor (const Team& team);
+    static int GetConfig(eConfigValue);
 };
 
 };
