@@ -121,6 +121,9 @@ const int RadarDist = 5;
 const int TargetZoneSize = 10;
 const int FoodValue=300;
 const int CorpseValue=1000;
+const int BugBotHealth=1000;
+const int HungerLevel=100;
+const int StarvingLevel=40;
 enum {CANNIBAL = 1, HUNGRY, STARVING, CORPSE, RENEGADE, SEARCHING, CARRIED};
 #endif
 
