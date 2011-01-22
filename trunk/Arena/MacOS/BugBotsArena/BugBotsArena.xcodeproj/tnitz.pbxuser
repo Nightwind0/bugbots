@@ -1,0 +1,235 @@
+// !$*UTF8*$!
+{
+	29B97313FDCFA39411CA2CEA /* Project object */ = {
+		activeBuildConfigurationName = Debug;
+		activeExecutable = 8ABB7EE512EB6332005D4EBD /* BugBotsArena */;
+		activeTarget = 8D1107260486CEB800E47090 /* BugBotsArena */;
+		addToTargets = (
+			8D1107260486CEB800E47090 /* BugBotsArena */,
+		);
+		codeSenseManager = 8ABB7EF612EB6364005D4EBD /* Code sense */;
+		executables = (
+			8ABB7EE512EB6332005D4EBD /* BugBotsArena */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					341,
+					20,
+					48.16259765625,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.XCSCMDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					20,
+					803,
+					20,
+					48.16259765625,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_SCM_ColumnID,
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 317416242;
+			PBXWorkspaceStateSaveDate = 317416242;
+		};
+		perUserProjectItems = {
+			8ABB7F1F12EB64AC005D4EBD /* XCBuildMessageTextBookmark */ = 8ABB7F1F12EB64AC005D4EBD /* XCBuildMessageTextBookmark */;
+			8ABB7F2012EB64AC005D4EBD /* PBXTextBookmark */ = 8ABB7F2012EB64AC005D4EBD /* PBXTextBookmark */;
+			8ABB7F2F12EB64E9005D4EBD /* XCBuildMessageTextBookmark */ = 8ABB7F2F12EB64E9005D4EBD /* XCBuildMessageTextBookmark */;
+			8ABB7F3012EB64E9005D4EBD /* PBXTextBookmark */ = 8ABB7F3012EB64E9005D4EBD /* PBXTextBookmark */;
+			8ABB7F3312EB64ED005D4EBD /* PBXTextBookmark */ = 8ABB7F3312EB64ED005D4EBD /* PBXTextBookmark */;
+			8ABB7F3912EB651C005D4EBD /* PBXTextBookmark */ = 8ABB7F3912EB651C005D4EBD /* PBXTextBookmark */;
+			8ABB7F4012EB655E005D4EBD /* PBXTextBookmark */ = 8ABB7F4012EB655E005D4EBD /* PBXTextBookmark */;
+			8ABB7F4112EB655E005D4EBD /* PBXTextBookmark */ = 8ABB7F4112EB655E005D4EBD /* PBXTextBookmark */;
+			8ABB7F4212EB656A005D4EBD /* PBXTextBookmark */ = 8ABB7F4212EB656A005D4EBD /* PBXTextBookmark */;
+			8ABB7F4312EB656A005D4EBD /* PBXTextBookmark */ = 8ABB7F4312EB656A005D4EBD /* PBXTextBookmark */;
+		};
+		sourceControlManager = 8ABB7EF512EB6364005D4EBD /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	8ABB7EE512EB6332005D4EBD /* BugBotsArena */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = BugBotsArena;
+		savedGlobals = {
+		};
+		showTypeColumn = 0;
+		sourceDirectories = (
+		);
+	};
+	8ABB7EF512EB6364005D4EBD /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+			repositoryNamesForRoots = {
+				../.. = BugBots;
+			};
+		};
+	};
+	8ABB7EF612EB6364005D4EBD /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	8ABB7F0412EB639C005D4EBD /* Food.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1005, 481}}";
+			sepNavSelRange = "{1010, 0}";
+			sepNavVisRange = "{196, 791}";
+		};
+	};
+	8ABB7F1F12EB64AC005D4EBD /* XCBuildMessageTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "Src/GameObject.h: No such file or directory";
+		fRef = 8ABB7F0412EB639C005D4EBD /* Food.h */;
+		fallbackIsa = XCBuildMessageTextBookmark;
+		rLen = 1;
+		rLoc = 22;
+		rType = 1;
+	};
+	8ABB7F2012EB64AC005D4EBD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 8ABB7F0412EB639C005D4EBD /* Food.h */;
+		name = "Food.h: 23";
+		rLen = 0;
+		rLoc = 811;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	8ABB7F2F12EB64E9005D4EBD /* XCBuildMessageTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "Src/GameObject.h: No such file or directory";
+		fRef = 8ABB7F0412EB639C005D4EBD /* Food.h */;
+		fallbackIsa = XCBuildMessageTextBookmark;
+		rLen = 1;
+		rLoc = 22;
+		rType = 1;
+	};
+	8ABB7F3012EB64E9005D4EBD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 8ABB7F0412EB639C005D4EBD /* Food.h */;
+		name = "Food.h: 23";
+		rLen = 0;
+		rLoc = 821;
+		rType = 0;
+		vrLen = 884;
+		vrLoc = 122;
+	};
+	8ABB7F3312EB64ED005D4EBD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 8ABB7F0412EB639C005D4EBD /* Food.h */;
+		name = "Food.h: 23";
+		rLen = 0;
+		rLoc = 811;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	8ABB7F3912EB651C005D4EBD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 8ABB7F0412EB639C005D4EBD /* Food.h */;
+		name = "Food.h: 23";
+		rLen = 0;
+		rLoc = 811;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	8ABB7F4012EB655E005D4EBD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 8ABB7F0412EB639C005D4EBD /* Food.h */;
+		name = "Food.h: 23";
+		rLen = 0;
+		rLoc = 811;
+		rType = 0;
+		vrLen = 230;
+		vrLoc = 776;
+	};
+	8ABB7F4112EB655E005D4EBD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 8ABB7F0412EB639C005D4EBD /* Food.h */;
+		name = "Food.h: 23";
+		rLen = 0;
+		rLoc = 811;
+		rType = 0;
+		vrLen = 626;
+		vrLoc = 380;
+	};
+	8ABB7F4212EB656A005D4EBD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 8ABB7F0412EB639C005D4EBD /* Food.h */;
+		name = "Food.h: 23";
+		rLen = 0;
+		rLoc = 811;
+		rType = 0;
+		vrLen = 626;
+		vrLoc = 380;
+	};
+	8ABB7F4312EB656A005D4EBD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 8ABB7F0412EB639C005D4EBD /* Food.h */;
+		name = "Food.h: 37";
+		rLen = 0;
+		rLoc = 1010;
+		rType = 0;
+		vrLen = 791;
+		vrLoc = 196;
+	};
+	8D1107260486CEB800E47090 /* BugBotsArena */ = {
+		activeExec = 0;
+		executables = (
+			8ABB7EE512EB6332005D4EBD /* BugBotsArena */,
+		);
+	};
+}
