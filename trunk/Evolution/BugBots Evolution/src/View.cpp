@@ -3,14 +3,14 @@
 using BugBots::View;
 
 namespace BugBots {
-    class DrawObjectVisitor : public Quadtree::Visitor<WorldObject*> {
+    class DrawObjectVisitor : public Quadtree::Visitor<WorldObject*, World::NodeType> {
         public:
         DrawObjectVisitor(){
         }
         virtual ~DrawObjectVisitor(){
         }
 
-        virtual bool Visit(WorldObject* object){
+        virtual bool Visit(WorldObject* object, const World::NodeType* node){
             object->Draw ( object->GetOrigin().m_x, object->GetOrigin().m_y );
             return true;
         }

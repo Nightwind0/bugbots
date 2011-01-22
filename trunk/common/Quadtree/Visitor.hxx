@@ -4,7 +4,7 @@
 
 namespace Quadtree
 {
-    template<class T>
+    template<class T, class Node>
     class Visitor
     {
     public:
@@ -12,7 +12,7 @@ namespace Quadtree
 		* @brief visit an object in the quadtree
 		* @return Whether to continue traversal
 		*/
-        virtual bool Visit(T)=0;
+        virtual bool Visit(T,const Node* node)=0;
     };
 }
 

@@ -48,12 +48,12 @@ void World::HandleObjectMovement ( WorldObject* object)
     AddObject ( object );
 }
 
-void World::TraverseAllObjects ( Quadtree::Visitor<WorldObject*>& visitor ) const
+void World::TraverseAllObjects ( Quadtree::Visitor<WorldObject*,NodeType>& visitor ) const
 {
     m_quadtree.TraverseAll ( visitor );
 }
 
-void World::TraverseObjects ( Quadtree::Visitor<WorldObject*>& visitor, const Quadtree::Geometry::Circle<double>& circle ) const
+void World::TraverseObjects ( Quadtree::Visitor<WorldObject*,NodeType>& visitor, const Quadtree::Geometry::Circle<double>& circle ) const
 {
     m_quadtree.Traverse ( visitor, circle );
 }
