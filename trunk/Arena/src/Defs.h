@@ -1,8 +1,8 @@
 #ifndef _H_DEFS_H
 #define _H_DEFS_H
 
-#include "Quadtree/Node.hxx"
-#include "Quadtree/Geometry.hxx"
+#include "../../common/Quadtree/Node.hxx"
+#include "../../common/Quadtree/Geometry.hxx"
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
