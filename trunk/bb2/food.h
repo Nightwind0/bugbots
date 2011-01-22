@@ -25,7 +25,7 @@ public:
 	void CarryClump();
 	void NoCarryClump();
 	bool IsCarried();
-	void SetPos(Position npos, bool replace);
+	void SetPos(const Position& npos, bool replace);
 };
 
 #endif

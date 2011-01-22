@@ -93,7 +93,7 @@ void Clump::SetSpawnRate(int sr)
     m_SpawnRate = sr;
 }
 
-void Clump::SetPos(Position apos)
+void Clump::SetPos(const Position& apos)
 {
     m_pos = apos;
 }

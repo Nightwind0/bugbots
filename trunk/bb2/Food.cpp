@@ -63,7 +63,7 @@ void Food::NoClump()
      m_clump = -1;
 }
 
-void Food::SetPos(Position npos,bool replace)
+void Food::SetPos(const Position& npos,bool replace)
 {
      Position tpos = m_pos;
      if(npos == m_pos)

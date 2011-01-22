@@ -55,7 +55,7 @@ int MapHandler::RegNewMainBrain(std::list<MainBrain>::iterator i)
 }
 
 
-std::list<BugBot>::iterator MapHandler::GetBugBotAt(Position pos)
+std::list<BugBot>::iterator MapHandler::GetBugBotAt(const Position& pos)
 {
     if(WithinSpace(pos))
     {
@@ -67,7 +67,7 @@ std::list<BugBot>::iterator MapHandler::GetBugBotAt(Position pos)
     }
 }
 
-std::list<BugBot>::iterator MapHandler::GetCorpseAt(Position pos)
+std::list<BugBot>::iterator MapHandler::GetCorpseAt(const Position& pos)
 {
     if(WithinSpace(pos))
     {
@@ -79,7 +79,7 @@ std::list<BugBot>::iterator MapHandler::GetCorpseAt(Position pos)
     }
 }
 
-std::list<Food>::iterator MapHandler::GetFoodAt(Position pos)
+std::list<Food>::iterator MapHandler::GetFoodAt(const Position& pos)
 {
     if(WithinSpace(pos))
     {
@@ -91,7 +91,7 @@ std::list<Food>::iterator MapHandler::GetFoodAt(Position pos)
     }
 }
 
-void MapHandler::SetBugBotAt(Position pos, std::list<BugBot>::iterator i)
+void MapHandler::SetBugBotAt(const Position& pos, std::list<BugBot>::iterator i)
 {
     if(WithinSpace(pos))
     {
@@ -99,7 +99,7 @@ void MapHandler::SetBugBotAt(Position pos, std::list<BugBot>::iterator i)
     }
 }
 
-void MapHandler::SetCorpseAt(Position pos,std::list<BugBot>::iterator i)
+void MapHandler::SetCorpseAt(const Position& pos,std::list<BugBot>::iterator i)
 {
     if(WithinSpace(pos))
     {
@@ -107,7 +107,7 @@ void MapHandler::SetCorpseAt(Position pos,std::list<BugBot>::iterator i)
     }
 }
 
-void MapHandler::SetFoodAt(Position pos,std::list<Food>::iterator i)
+void MapHandler::SetFoodAt(const Position& pos,std::list<Food>::iterator i)
 {
     if(WithinSpace(pos))
     {
@@ -115,7 +115,7 @@ void MapHandler::SetFoodAt(Position pos,std::list<Food>::iterator i)
     }
 }
 
-bool MapHandler::WithinSpace(Position pos)
+bool MapHandler::WithinSpace(const Position& pos)
 {
     if(pos.x > 0 && pos.x < SCREENWIDTH && pos.y >0 && pos.y <SCREENHEIGHT)
     {
@@ -181,7 +181,7 @@ std::list<MainBrain>::iterator MapHandler::GetMainBrainIter(int mb)
     }
 }
 
-bool MapHandler::IsOccupiedByBugBot(Position pos)
+bool MapHandler::IsOccupiedByBugBot(const Position& pos)
 {
     if(WithinSpace(pos))
     {
@@ -190,7 +190,7 @@ bool MapHandler::IsOccupiedByBugBot(Position pos)
     return false;
 }
 
-bool MapHandler::IsOccupiedByItem(Position pos)
+bool MapHandler::IsOccupiedByItem(const Position& pos)
 {
     if(WithinSpace(pos))
     {
@@ -199,7 +199,7 @@ bool MapHandler::IsOccupiedByItem(Position pos)
     return false;
 }
 
-bool MapHandler::IsOccupiedByFood(Position pos)
+bool MapHandler::IsOccupiedByFood(const Position& pos)
 {
     if(WithinSpace(pos))
     {
@@ -208,7 +208,7 @@ bool MapHandler::IsOccupiedByFood(Position pos)
     return false;
 }
 
-bool MapHandler::IsOccupiedByCorpse(Position pos)
+bool MapHandler::IsOccupiedByCorpse(const Position& pos)
 {
     if(WithinSpace(pos))
     {
@@ -217,7 +217,7 @@ bool MapHandler::IsOccupiedByCorpse(Position pos)
     return false;
 }
 
-Position MapHandler::NoFood(Position pos)
+Position MapHandler::NoFood(const Position& pos)
 {
     using std::vector;
     vector<Pixel> PixelList;
@@ -240,7 +240,7 @@ Position MapHandler::NoFood(Position pos)
     return NoPosition;
 }
 
-Position MapHandler::NoBot(Position pos)
+Position MapHandler::NoBot(const Position& pos)
 {
     using std::vector;
     vector<Pixel> PixelList;
@@ -264,7 +264,7 @@ Position MapHandler::NoBot(Position pos)
 }
 
 
-std::list<BugBot>::iterator MapHandler::NewBugBot(int team, Position pos)
+std::list<BugBot>::iterator MapHandler::NewBugBot(int team, const Position& pos)
 {
     using std::list;
     BugBot b;
@@ -277,7 +277,7 @@ std::list<BugBot>::iterator MapHandler::NewBugBot(int team, Position pos)
     return i;
 }
 
-std::list<MainBrain>::iterator MapHandler::NewMainBrain(Position pos,int c1, int c2, int c3, int c4, int c5)
+std::list<MainBrain>::iterator MapHandler::NewMainBrain(const Position& pos,int c1, int c2, int c3, int c4, int c5)
 {
     using std::list;
     MainBrain mb;
@@ -290,7 +290,7 @@ std::list<MainBrain>::iterator MapHandler::NewMainBrain(Position pos,int c1, int
     return i;
 }
 
-std::list<Clump>::iterator MapHandler::NewClump(Position pos, int spawnrate)
+std::list<Clump>::iterator MapHandler::NewClump(const Position& pos, int spawnrate)
 {
     using std::list;
     Clump c;
@@ -303,7 +303,7 @@ std::list<Clump>::iterator MapHandler::NewClump(Position pos, int spawnrate)
     return i;
 }
 
-std::list<Food>::iterator MapHandler::NewFood(int clump, Position pos)
+std::list<Food>::iterator MapHandler::NewFood(int clump, const Position& pos)
 {
     using std::list;
     Food f;

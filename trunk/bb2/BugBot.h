@@ -39,7 +39,7 @@ private:
 	void AreaScan(); //for use in update	
 
 	void AvoidUpdate(Avoid Param); //for use in update
-	bool Move(Position pos); //try to move to a square
+	bool Move(const Position& pos); //try to move to a square
 	bool Attack(int enemy); //attack another bugbot, return true if winner
 	void Eat(Item item); //eat a food or a corpse
 	void Die();
@@ -50,8 +50,8 @@ private:
 
 
 	void DropItem();
-	void ItemInPath(Position pos);
-	bool BotInPath(Position pos); //true if a bot still exists at pos, false if not
+	void ItemInPath(const Position& pos);
+	bool BotInPath(const Position& pos); //true if a bot still exists at pos, false if not
 	std::vector<Item> Radar();
 
 	bool starved;
@@ -88,7 +88,7 @@ public:
 
 	void FoodFromGod(int FoodValue); //called by a mainbrain when the brain feeds it
 	void ReachedTarget(); //called by mainbrain during its sweep if it finds a mainbrain
-	void SetPos(Position pos, bool replace=false); //called when another bot drags a corpse
+	void SetPos(const Position& pos, bool replace=false); //called when another bot drags a corpse
 	void SetTeam(int ateam);
 	void RemoveRefOfBot(int i);
 	void RemoveRefOfFood(int i);
