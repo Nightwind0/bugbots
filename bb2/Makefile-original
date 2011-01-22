@@ -1,0 +1,26 @@
+
+
+
+
+bb: bb_l.cpp  BugBots.o Food.o MapHandler.o clump.o flag.o mainbrain.o utility.o soundmanager.o
+	g++ -O3 -DDOUBLE_PIXEL_MODE bb_w.cpp BugBots.o Food.o MapHandler.o clump.o flag.o mainbrain.o utility.o soundmanager.o -lclanDisplay -lclanCore -lclanApp -lclanSound -o bb
+BugBots.o: BugBots.cpp BugBot.h MapHandler.h
+	g++ -O2 -c BugBots.cpp
+Food.o: Food.cpp food.h
+	g++ -O2 -c Food.cpp
+soundmanager.o: soundmanager.cpp soundmanager.h
+	g++ -O2 -c soundmanager.cpp
+MapHandler.o: MapHandler.cpp MapHandler.h
+	g++ -O2 -c MapHandler.cpp
+clump.o: clump.cpp clump.h MapHandler.h
+	g++ -O2 -c clump.cpp
+flag.o: flag.cpp 
+	g++ -O2 -c flag.cpp
+mainbrain.o: mainbrain.cpp mainbrain.h MapHandler.h
+	g++ -O2 -c mainbrain.cpp
+utility.o: utility.cpp utility.h MapHandler.h
+	g++ -O2 -c utility.cpp
+gmon.out: 
+	g++ -pg utility.cpp mainbrain.cpp clump.cpp MapHandler.cpp Food.cpp BugBots.cpp bb_w.cpp -lclanCore -lclanApp -lclanDisplay
+clean: 
+	rm -f *.o bb
