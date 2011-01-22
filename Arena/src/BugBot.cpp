@@ -51,6 +51,8 @@ void BugBot::Update()
 	MoveTo(QTVector(pos.GetX(),pos.GetY()+1));
     }else if(pos.GetY() > m_goal.GetY()){
 	MoveTo(QTVector(pos.GetX(),pos.GetY()-1));
+    }else{ // we're there
+	m_goal = QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT);
     }
     
 }

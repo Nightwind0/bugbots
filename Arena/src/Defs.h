@@ -5,8 +5,8 @@
 #include "../../common/Quadtree/Geometry.hxx"
 #include <tr1/memory>
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
+const int SCREEN_WIDTH = 500;
+const int SCREEN_HEIGHT = 500;
 const int SCREEN_BPP = 32;
 
 namespace BugBots {
