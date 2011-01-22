@@ -57,6 +57,9 @@ int Utilities::GetConfig(eConfigValue config)
 	    return 50;
 	case INITIAL_RESOURCES:
 	    return 1000;
+	default:
+		assert(0);
+		return 0;
     }
 }
 
