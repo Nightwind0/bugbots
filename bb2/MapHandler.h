@@ -40,15 +40,15 @@ private:
 public:
 	void CorrectMap();
 	MapHandler();
-	std::list<BugBot>::iterator GetBugBotAt(Position pos);
-	std::list<BugBot>::iterator GetCorpseAt(Position pos);
-	std::list<Food>::iterator GetFoodAt(Position pos);
+	std::list<BugBot>::iterator GetBugBotAt(const Position& pos);
+	std::list<BugBot>::iterator GetCorpseAt(const Position& pos);
+	std::list<Food>::iterator GetFoodAt(const Position& pos);
 
-	void SetBugBotAt(Position pos, std::list<BugBot>::iterator i);
-	void SetCorpseAt(Position pos, std::list<BugBot>::iterator i);
-	void SetFoodAt(Position pos, std::list<Food>::iterator i);
+	void SetBugBotAt(const Position& pos, std::list<BugBot>::iterator i);
+	void SetCorpseAt(const Position& pos, std::list<BugBot>::iterator i);
+	void SetFoodAt(const Position& pos, std::list<Food>::iterator i);
 
-	bool WithinSpace(Position pos);
+	bool WithinSpace(const Position& pos);
 
 	std::list<BugBot>::iterator GetBugBotIter(int bot);
 	std::list<BugBot>::const_iterator GetBugBotEnd() const 
@@ -63,18 +63,18 @@ public:
 	std::list<MainBrain>::const_iterator GetMainBrainEnd() const
 	  { return m_MainBrainList.end(); }
 
-	bool IsOccupiedByBugBot(Position pos);
-	bool IsOccupiedByItem(Position pos);
-	bool IsOccupiedByFood(Position pos);
-        bool IsOccupiedByCorpse(Position pos);
+	bool IsOccupiedByBugBot(const Position& pos);
+	bool IsOccupiedByItem(const Position& pos);
+	bool IsOccupiedByFood(const Position& pos);
+        bool IsOccupiedByCorpse(const Position& pos);
 
-	Position NoFood(Position pos);
-	Position NoBot(Position pos);
+	Position NoFood(const Position& pos);
+	Position NoBot(const Position& pos);
 
-	std::list<BugBot>::iterator NewBugBot(int team, Position pos);
-	std::list<MainBrain>::iterator NewMainBrain(Position pos,int c1,int c2, int c3, int c4,int c5);
-	std::list<Food>::iterator NewFood(int clump, Position pos);
-	std::list<Clump>::iterator NewClump(Position pos, int spawnrate);
+	std::list<BugBot>::iterator NewBugBot(int team, const Position& pos);
+	std::list<MainBrain>::iterator NewMainBrain(const Position& pos,int c1,int c2, int c3, int c4,int c5);
+	std::list<Food>::iterator NewFood(int clump, const Position& pos);
+	std::list<Clump>::iterator NewClump(const Position& pos, int spawnrate);
 
 	void EraseBugBot(int bot);
 	void EraseFood(int food);

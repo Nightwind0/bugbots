@@ -74,7 +74,7 @@ void MainBrain::ReportFood(int food)
 }
 
 
-bool MainBrain::InTargetZone(Position pos)
+bool MainBrain::InTargetZone(const Position& pos)
 {
      return (DistPTP(m_pos,pos) < float(TargetZoneSize)) ? true : false;
 }
@@ -355,7 +355,7 @@ Position MainBrain::GetPos()
      return m_pos;
 }
 
-void MainBrain::SetPos(Position pos)
+void MainBrain::SetPos(const Position& pos)
 {
      m_pos = pos;
 }

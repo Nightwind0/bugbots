@@ -29,11 +29,11 @@ public:
     void MainBrainReport();
 	MainBrain();
 	void SetColors(int,int,int,int,int);
-	void SetPos(Position pos);
+	void SetPos(const Position& pos);
 	bool CanFeed(int bothealth);
 
 	Position GetTargetPos(const Position& current_pos);				//tells the bugbots where to go
-	bool InTargetZone(Position pos);			//whether or not a position is in the target zone
+	bool InTargetZone(const Position& pos);			//whether or not a position is in the target zone
 	Position GetPos(); 					//the position of the mainbrain
 	void SweepTargetZone(); 				//check target zone for food or corpses and assimilate. Checks for bugbots standing on it and tells them if they are
 	void Update();						//sweep and create new bugbots if possable. Also returns false if no bugbots are left

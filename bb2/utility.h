@@ -27,7 +27,7 @@ struct Spot;
 // Utility Function Prototypes
 
 
-double DistPTP(Position pt1, Position pt2); //distance between points in pixels
+double DistPTP(const Position& pt1, const Position& pt2); //distance between points in pixels
 void KillIanMoore();
 
 const int NumWords = 2;
@@ -37,14 +37,16 @@ const int MaxFlag = 32 * NumWords;
 // Utility Class Definitions
 class Position
 {
+private:
+		
 public:
 	Position(int param1=0 , int param2 =0);
-	Position(const Position& pos);
-	bool operator<(Position operand){return true;}
-	bool operator==(Position operand);
-	bool operator!=(Position operand) {return !operator==(operand);}
 
-	Position operator=(const Position operand);
+	bool operator<(const Position& operand) const {return true;}
+	bool operator==(const Position& operand) const;
+	bool operator!=(const Position& operand) const {return !operator==(operand);}
+	Position(const Position& pos);
+	Position operator=(const Position& operand);
 	void Random(); //sets x and y random on the screen in-descriminantly
 
 
@@ -73,7 +75,7 @@ class Avoid
 {
 public:
 	Avoid();
-	Avoid(Position pos, int time);
+	Avoid(const Position& pos, int time);
 	Avoid(int x, int y, int time);
 	void Update();
 	bool IsOver();
@@ -103,7 +105,7 @@ class Pixel
     Pixel();
     Pixel(int x, int y, double dist);
     ~Pixel(){}
-    Pixel(Position InitLoc, double dist);
+    Pixel(const Position& InitLoc, double dist);
     bool operator<(Pixel operand) const;
     bool operator>(Pixel operand) const ;
     bool operator==(Pixel operand) const;

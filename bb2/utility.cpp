@@ -20,7 +20,7 @@ Spot::Spot()
 {
 }
 
-double DistPTP(Position pt1, Position pt2)
+double DistPTP(const Position& pt1, const Position& pt2)
 {
     int dx = abs(pt1.x - pt2.x);
     int dy =  abs(pt1.y - pt2.y);
@@ -126,12 +126,12 @@ Position::Position(const Position& pos)
 	y = pos.y;
 }
 
-bool Position::operator==(Position operand)
+bool Position::operator==(const Position& operand) const
 {
 	return (x == operand.x && y == operand.y);
 }
 
-Position Position::operator=(const Position operand)
+Position Position::operator=(const Position& operand)
 {
 	x = operand.x;
 	y = operand.y;
@@ -150,7 +150,7 @@ Avoid::Avoid() : Location(NoPosition)
 	Timer = AvoidLength;
 }
 
-Avoid::Avoid(Position pos, int time) : Location(pos)
+Avoid::Avoid(const Position& pos, int time) : Location(pos)
 {
 	Timer = time;
 }
@@ -202,7 +202,7 @@ Pixel::Pixel(int x, int y, double dist)
 	DistToDest = dist;
 }
 
-Pixel::Pixel(Position InitLoc, double dist)
+Pixel::Pixel(const Position& InitLoc, double dist)
 {
 	Location = InitLoc;
 	DistToDest = dist;

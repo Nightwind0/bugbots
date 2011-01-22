@@ -312,7 +312,7 @@ bool BugBot::MoveToDest()
 }
 
 
-bool BugBot::Move(Position pos)
+bool BugBot::Move(const Position& pos)
 {
     if(pos.x < 0 || pos.x > SCREENWIDTH || pos.y < 0 || pos.y > SCREENHEIGHT)
     {
@@ -350,7 +350,7 @@ bool BugBot::Move(Position pos)
     }
 }
 
-bool BugBot::BotInPath(Position pos)
+bool BugBot::BotInPath(const Position& pos)
 {
     const bool can = IsCannibal();
     const bool ren = IsRenegade();
@@ -406,7 +406,7 @@ bool BugBot::BotInPath(Position pos)
     return true;
 }
 
-void BugBot::ItemInPath(Position pos)
+void BugBot::ItemInPath(const Position& pos)
 {
     std::list<Food>::iterator food = MH.GetFoodAt(pos);
     std::list<BugBot>::iterator corpse = MH.GetCorpseAt(pos);
@@ -1016,10 +1016,10 @@ bool BugBot::IsRenegade()
     return m_flags[RENEGADE];
 }
 
-void BugBot::SetPos(Position pos, bool replace)
+void BugBot::SetPos(const Position& pos, bool replace)
 {
     
-    if(pos == m_pos) replace=false;
+    if(m_pos == pos) replace=false;
     
     std::list<BugBot>::iterator meit = MH.GetBugBotIter(m_me);
     Position tpos = m_pos;

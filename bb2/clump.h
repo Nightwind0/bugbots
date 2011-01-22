@@ -28,7 +28,7 @@ public:
     bool OwnerOf(int food);
     int GetAFood();
     bool HasFood();
-    void SetPos(Position apos);
+    void SetPos(const Position& apos);
     void SetMe(int i);
 
     Position GetPosition();
