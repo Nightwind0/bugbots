@@ -103,9 +103,9 @@ int main(int argc, char* argv[])
 							     
     // create window
     if(double_pixel_mode)
-	screen = SDL_SetVideoMode(SCREENWIDTH*2, SCREENHEIGHT*2, 32, SDL_SWSURFACE);
+	screen = SDL_SetVideoMode(SCREENWIDTH*2, SCREENHEIGHT*2, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
     else
-	screen = SDL_SetVideoMode(SCREENWIDTH, SCREENHEIGHT, 32, SDL_SWSURFACE);
+	screen = SDL_SetVideoMode(SCREENWIDTH, SCREENHEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
 
     srand(time(NULL));
  
