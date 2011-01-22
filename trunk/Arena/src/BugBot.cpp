@@ -41,20 +41,30 @@ BugBots::Color BugBot::GetColor() const
 void BugBot::Update()
 {
     QTVector pos = GetPos();
-    
-    // Dead Stupid AI
-    if(pos.GetX() > m_goal.GetX()){
-	MoveTo(QTVector(pos.GetX()-1,pos.GetY()));
-    }else if(pos.GetX() < m_goal.GetX()){
-	MoveTo(QTVector(pos.GetX()+1,pos.GetY()));
-    }else if(pos.GetY() < m_goal.GetY()){
-	MoveTo(QTVector(pos.GetX(),pos.GetY()+1));
-    }else if(pos.GetY() > m_goal.GetY()){
-	MoveTo(QTVector(pos.GetX(),pos.GetY()-1));
-    }else{ // we're there
-	m_goal = QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT);
-    }
-    
+	int xDif = abs(pos.GetX() - m_goal.GetX());
+	int yDif = abs(pos.GetY() - m_goal.GetY());
+	
+	if (xDif == 0 && yDif ==0) {
+		m_goal = QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT);
+	}
+	else {
+		if (xDif > yDif) {
+			if (pos.GetX() > m_goal.GetX()) {
+				MoveTo(QTVector(pos.GetX()-1,pos.GetY()));
+			}
+			else {
+				MoveTo(QTVector(pos.GetX()+1,pos.GetY()));
+			}
+		}
+		else {
+			if (pos.GetY() > m_goal.GetY()) {
+				MoveTo(QTVector(pos.GetX(),pos.GetY()-1));
+			}
+			else {
+				MoveTo(QTVector(pos.GetX(),pos.GetY()+1));
+			}
+		}		
+	}
 }
 
 
