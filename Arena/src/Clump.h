@@ -17,27 +17,25 @@
 
 */
 
-#ifndef BUGBOT_H
-#define BUGBOT_H
+#ifndef CLUMP_H
+#define CLUMP_H
 
 #include "GameObject.h"
-#include "MainBrain.h"
-#include "Food.h"
 
-namespace BugBots {
+namespace BugBots{
 
-class BugBot : public BugBots::GameObject
+
+class Clump : public BugBots::GameObject
 {
+
 public:
-    BugBot(MainBrain& mainbrain);
-    virtual ~BugBot();
-    virtual Color GetColor() const;
+    Clump();
+    virtual ~Clump(){}
     virtual void Update();
+    virtual BugBots::Color GetColor() const;
 private:
-    Food* m_pFood;
-    QTVector m_goal;
-    MainBrain& m_mainbrain;
+    unsigned int m_tics;
 };
 
 }
-#endif // BUGBOT_H
+#endif // CLUMP_H

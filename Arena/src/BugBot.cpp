@@ -23,7 +23,7 @@
 using namespace BugBots;
 
 
-BugBot::BugBot(MainBrain& brain):m_mainbrain(brain),m_goal(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT)
+BugBot::BugBot(MainBrain& brain):m_mainbrain(brain),m_goal(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT),m_pFood(NULL)
 {
 }
 
@@ -43,31 +43,52 @@ void BugBot::Update()
     
     std::list<GameObject*> blips;
     scan(QTCircle(GetPos(),20),blips);
-    QTVector pos = GetPos();
-	int xDif = abs(pos.GetX() - m_goal.GetX());
-	int yDif = abs(pos.GetY() - m_goal.GetY());
+    
+    for(std::list<GameObject*>::const_iterator iter = blips.begin();
+	iter != blips.end(); iter++){
+	if(!m_pFood){
+	    Food * pFood = dynamic_cast<Food*>(*iter);
+	    if(pFood && !pFood->IsGrabbed()){
+		m_goal = pFood->GetPos();
+		if(m_goal == GetPos()){
+		    if(pFood->Grab())
+			m_pFood = pFood;
+		}
+		break;
+	    }
+	}
+	}
 	
-	if (xDif == 0 && yDif ==0) {
-		m_goal = QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT);
+    QTVector pos = GetPos();
+    int xDif = abs(pos.GetX() - m_goal.GetX());
+    int yDif = abs(pos.GetY() - m_goal.GetY());
+    
+    if (xDif == 0 && yDif ==0) {
+	m_goal = QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT);
+    }
+    else {
+	if (xDif > yDif) {
+	    if (pos.GetX() > m_goal.GetX()) {
+		MoveTo(QTVector(pos.GetX()-1,pos.GetY()));
+	    }
+	    else {
+		MoveTo(QTVector(pos.GetX()+1,pos.GetY()));
+	    }
 	}
 	else {
-		if (xDif > yDif) {
-			if (pos.GetX() > m_goal.GetX()) {
-				MoveTo(QTVector(pos.GetX()-1,pos.GetY()));
-			}
-			else {
-				MoveTo(QTVector(pos.GetX()+1,pos.GetY()));
-			}
-		}
-		else {
-			if (pos.GetY() > m_goal.GetY()) {
-				MoveTo(QTVector(pos.GetX(),pos.GetY()-1));
-			}
-			else {
-				MoveTo(QTVector(pos.GetX(),pos.GetY()+1));
-			}
-		}		
-	}
+	    if (pos.GetY() > m_goal.GetY()) {
+		MoveTo(QTVector(pos.GetX(),pos.GetY()-1));
+	    }
+	    else {
+		MoveTo(QTVector(pos.GetX(),pos.GetY()+1));
+	    }
+	}		
+    }
+    
+    if(m_pFood)
+    {
+	m_pFood->MoveTo(pos);
+    }
 }
 
 

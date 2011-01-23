@@ -22,6 +22,14 @@
 
 using BugBots::Food;
 
+Food::Food():m_grabbed(false)
+{
+}
+
+Food::~Food()
+{
+}
+
 BugBots::Color Food::GetColor() const
 {
     return Utilities::CreateColor(0.0,0.75,0.0);
@@ -29,5 +37,12 @@ BugBots::Color Food::GetColor() const
 
 void Food::Update()
 {
+}
+
+bool Food::Grab()
+{
+    if(m_grabbed) return false;
+    m_grabbed = true;
+    return true;
 }
 

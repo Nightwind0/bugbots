@@ -28,8 +28,14 @@ class Food : public BugBots::GameObject
 {
 
 public:
+    Food();
+    virtual ~Food();
     virtual BugBots::Color GetColor() const;
     virtual void Update();
+    bool Grab();
+    bool IsGrabbed(){ return m_grabbed; }
+private:
+    bool m_grabbed;
 };
 
 }
