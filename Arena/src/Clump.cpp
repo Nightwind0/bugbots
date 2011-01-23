@@ -30,7 +30,7 @@ Clump::Clump():m_tics(0)
 
 void Clump::Update()
 {
-    if(++m_tics % 10 == 0)
+  //  if(++m_tics % 10 == 0)
 	spawn(new Food(),GetPos());
     
 }

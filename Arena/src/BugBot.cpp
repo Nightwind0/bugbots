@@ -43,7 +43,7 @@ BugBots::Color BugBot::GetColor() const
 void BugBot::Update()
 {
     if(m_pItem)
-	m_pItem->SetPos(GetPos());
+		m_pItem->SetPos(GetPos());
     
     std::list<GameObject*> blips;
     scan(QTCircle(GetPos(),10),blips);

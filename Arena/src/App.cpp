@@ -280,7 +280,19 @@ void App::DrawPixel32(SDL_Surface* screen,Uint32 color, int x, int y){
 }
 
 void App::DrawPixel(SDL_Surface* screen,Uint32 color, int x, int y){
-	(this->*m_draw_pixel)(screen,color,x,y);
+	if(x>0 && y>0)
+		(this->*m_draw_pixel)(screen,color,x,y);
+}
+
+void App::DrawSquare(SDL_Surface* screen,Uint32 color, int x, int y, int size){
+	int top = y - size/2;
+	int left = x - size/2;
+	for (int i = 0; i < size; i++) {
+		DrawPixel(screen,color,left+i,top); //Top
+		DrawPixel(screen,color,left,top+i); //Left
+		DrawPixel(screen,color,left+i,top+size); //Bottom
+		DrawPixel(screen,color,left+size,top+i); //Right
+	}
 }
 
 void App::Log(const char*str)
