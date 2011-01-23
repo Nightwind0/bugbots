@@ -45,6 +45,10 @@ private:
 	    Uint32 c = SDL_MapRGBA(m_screen->format,color.r,color.g,color.b,color.a);	    
 	    App::DrawPixel(m_screen,c,x,y);
 	}
+	void DrawSquare(BugBots::Color color, int x, int y, int size){
+	    Uint32 c = SDL_MapRGBA(m_screen->format,color.r,color.g,color.b,color.a);	    
+	    App::DrawSquare(m_screen,c,x,y,size);
+	}	
 	SDL_Surface* m_screen;
 	bool m_paused;
 	BugBots::QTRootNode m_quadtree;

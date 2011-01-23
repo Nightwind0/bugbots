@@ -20,6 +20,7 @@ typedef Quadtree::RootNode<GameObject*,QUADTREE_DEPTH,int> QTRootNode;
 typedef Quadtree::Node<GameObject*,QUADTREE_DEPTH,int> QTNode;
 typedef Quadtree::Geometry::Vector<int> QTVector;
 typedef Quadtree::Geometry::Circle<int> QTCircle;
+typedef Quadtree::Geometry::Square<int> QTSquare;
 
 struct Color
 {

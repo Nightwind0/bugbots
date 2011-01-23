@@ -50,6 +50,7 @@ protected:
 	void DrawPixel24_BigEndian(SDL_Surface*,Uint32 color, int x, int y);
 	void DrawPixel32(SDL_Surface*,Uint32 color, int x, int y);
 	void DrawPixel(SDL_Surface*,Uint32 color,int x, int y);
+	void DrawSquare(SDL_Surface*,Uint32 color, int x, int y, int size);
 	virtual SDL_Surface * GetScreen()const=0;
 private:
 	typedef void (App::*DrawPixelFunc)(SDL_Surface*, Uint32 color, int x, int y);

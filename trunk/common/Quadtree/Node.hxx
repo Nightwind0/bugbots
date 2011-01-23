@@ -146,6 +146,8 @@ namespace Quadtree
         * @brief Release all data and reset this node
         */
         void Clear(NodePtr pParent, const Square &quad);
+		
+		Square GetSquare() const{return m_quad;}
     protected:
         virtual OurNodePool * Get_Node_Pool()
         {
@@ -204,7 +206,7 @@ namespace Quadtree
         NodePtr m_pBottomright;
 	int m_depth;
         ObjectContainer m_objects;
-        Square m_quad;
+		Square m_quad;
         mutable bool m_bNoRemovals;
     };
 

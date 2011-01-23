@@ -3,6 +3,7 @@
 #include "Clump.h"
 #include "GameObject.h"
 #include "MainBrain.h"
+#include "Utilities.h"
 #include <sys/time.h>
 #include <list>
 #include <iostream>
@@ -65,6 +66,27 @@ public:
 private:
    T* m_pApp;
    DrawFunctor m_functor;
+};
+
+template <class T>
+class NodeDrawer : public QTNode::OurVisitor
+{
+public:
+    typedef void (T::*DrawFunctor)(BugBots::Color, int, int, int);
+    NodeDrawer(T* pApp,DrawFunctor functor):m_pApp(pApp),m_functor(functor){
+		
+    }
+    
+    virtual bool Visit(BugBots::GameObject* object,const BugBots::QTNode* node){
+		BugBots::Color color = Utilities::CreateColor(0.2,0.2,0.2);
+		BugBots::QTVector pos = node->GetSquare().GetCenter();
+		int size = node->GetSquare().GetSize();
+		(m_pApp->*m_functor)(color, pos.GetX(),pos.GetY(),size);
+		return true;
+    }
+private:
+	T* m_pApp;
+	DrawFunctor m_functor;
 };
 
 Game::Game():m_quadtree(BugBots::QTNode::Square(BugBots::QTVector(0,0),QUADTREE_SIZE)){
@@ -152,6 +174,9 @@ void Game::OnRender(){
   int tick = SDL_GetTicks();
 
   SDL_FillRect( m_screen, &m_screen->clip_rect, SDL_MapRGB( m_screen->format, 0x0, 0x0, 0x0 ) ); 
+  // Draw Quadtree Nodes
+  NodeDrawer<Game> nodedrawer(this,&Game::DrawSquare);
+  m_quadtree.TraverseAll(nodedrawer);
   // Draw to screen
   Drawer<Game> drawer(this,&Game::DrawPixel);
   m_quadtree.TraverseAll(drawer);
