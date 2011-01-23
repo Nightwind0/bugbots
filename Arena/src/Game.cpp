@@ -99,6 +99,7 @@ void Game::scan_area(const BugBots::QTCircle& circle, std::list<GameObject*> & b
 {
     Scanner scanner(bucket);
     ScannerPredicate predicate(circle);
+    //m_quadtree.Traverse(scanner,circle);
     m_quadtree.Traverse(scanner,circle,predicate);
 }
 

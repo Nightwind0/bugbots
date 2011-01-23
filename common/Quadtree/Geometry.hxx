@@ -24,6 +24,15 @@ namespace Quadtree
 
 			Scalar GetX() const { return m_x; }
 			Scalar GetY() const { return m_y; }
+			Scalar LengthSquared() {
+			    return (m_x * m_x + m_y*m_y);
+			}
+			Vector<Scalar> operator-(const Vector<Scalar>& rhs){
+			    return Vector<Scalar>(m_x-rhs.m_x,m_y-rhs.m_y);
+			}
+			Vector<Scalar> operator+(const Vector<Scalar>& rhs){
+			    return Vector<Scalar>(m_x+rhs.m_x,m_y+rhs.m_y);
+			}
 		private:
 			Scalar m_x;
 			Scalar m_y;
@@ -110,12 +119,10 @@ namespace Quadtree
 				(11:23:24 PM) Victor Dods: so it becomes length_squared(c1 - c2) < (r1 + r2)^2
 				(11:23:38 PM) Victor Dods: where length_squared(vec) = vec.x*vec.x + vec.y*vec.y
 				*/
-				Vector<Scalar> otherc = other.GetCenter();
-				Scalar my_length2 = m_center.GetX() * m_center.GetX() + m_center.GetY() * m_center.GetY();
-				Scalar their_length2 =  otherc.GetX() * otherc.GetX() + otherc.GetY() * otherc.GetY();
-
-				if (my_length2 - their_length2 < ((m_radius + other.GetRadius()) * (m_radius + other.GetRadius())))
-					return true;
+				
+				Scalar difference = (GetCenter() - other.GetCenter()).LengthSquared();
+				if(difference < (m_radius + other.m_radius) * (m_radius + other.m_radius))
+				    return true;
 				else return false;
 			}
 		private:
