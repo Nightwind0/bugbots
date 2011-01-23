@@ -58,10 +58,9 @@ namespace Quadtree
          *
          * @param bounds the boundary rectangle
          * @param t The instance
+	 * 
          */
         void Remove(const Circle &bounds,const T &t);
-
-
         /**
          * @brief Change the position of an object already in this node
          *
@@ -69,7 +68,7 @@ namespace Quadtree
          * @param t the object that is moving
          * @param newpos where the object is moving to
          */
-        void MoveObject(const T &t, const Circle& current_pos,const Circle& newpos);
+        void MoveObject(const T &t, const Geometry::Circle<Scalar> & current_pos,const Geometry::Circle<Scalar> & newpos);
 
         /**
          * @brief The maximum size object this node will contain
@@ -94,6 +93,39 @@ namespace Quadtree
          * @return Whether to stop the traversal, as indicated by the visitor
          */
         bool Traverse(OurVisitor &visitor, const Circle &circle) const;
+	
+	/**
+         * @brief Calls the visitor on each object within the view circle and which the predicate is true
+	 *  
+         * @return Whether to stop the traversal, as indicated by the visitor
+         */
+	template<class Predicate>
+	bool Traverse(OurVisitor &visitor, const Circle &circle, Predicate pred ) const
+	{
+	    // First, my objects.
+	    for (typename ObjectContainer::const_iterator it = m_objects.begin();
+		 it != m_objects.end(); it++)
+		 {
+		     // Visit and determine if I should stop traversal
+		     if(pred(*it)) {
+			 if (!visitor.Visit(*it,this))
+			     return false;
+		     }
+		 }
+		 bool stop = false;
+	    // Now, see if this intersects any of my children
+		 if (m_pTopleft && m_pTopleft->Intersects(circle))
+		     stop = m_pTopleft->Traverse(visitor,circle);
+		 if (!stop && m_pTopright && m_pTopright->Intersects(circle))
+		     stop = m_pTopright->Traverse(visitor,circle);
+		 if (!stop && m_pBottomleft && m_pBottomleft->Intersects(circle))
+		     stop = m_pBottomleft->Traverse(visitor,circle);
+		 if (!stop && m_pBottomright && m_pBottomright->Intersects(circle))
+		     stop = m_pBottomright->Traverse(visitor,circle);
+		 
+		 return stop;
+	}
+	
 
         /**
         * @brief Calls the visitor on all objects of this node and below
@@ -170,6 +202,7 @@ namespace Quadtree
         NodePtr m_pTopright;
         NodePtr m_pBottomleft;
         NodePtr m_pBottomright;
+	int m_depth;
         ObjectContainer m_objects;
         Square m_quad;
         mutable bool m_bNoRemovals;
@@ -261,6 +294,7 @@ namespace Quadtree
     public:
         typedef Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes> OurNode;
         typedef NodePool<T,max_depth,Scalar,max_object_radius,delete_empty_nodes> OurNodePool;
+	
 
         RootNode(Scalar x, Scalar y, Scalar size)
                 :OurNode(NULL,Square(Vector(x,y),size))
@@ -281,6 +315,8 @@ namespace Quadtree
         {
         }
 
+
+
     protected:
         virtual OurNodePool * Get_Node_Pool()
         {
@@ -296,7 +332,7 @@ namespace Quadtree
             :m_pParent(pParent),m_pTopleft(NULL),m_pTopright(NULL),
             m_pBottomleft(NULL),m_pBottomright(NULL),m_quad(quad),m_bNoRemovals(false)
     {
-
+	m_depth = calculate_depth();
     }
 
     /**
@@ -334,7 +370,7 @@ namespace Quadtree
     Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::Add(const Circle &bounds,const T &t)
     {
         Scalar radius = bounds.GetRadius();
-        uint cur_depth = calculate_depth();
+        uint cur_depth = m_depth;
         Scalar myradius = GetMaxObjectRadius();
         if (cur_depth == max_depth || radius >= myradius / (Scalar)2 )
         {
@@ -378,7 +414,7 @@ namespace Quadtree
 
         Scalar radius = bounds.GetRadius();
         Scalar myradius = GetMaxObjectRadius();
-	int depth = calculate_depth();
+	int depth = m_depth;
 
         if (depth == max_depth || radius  / (Scalar)2 > myradius)
         {
@@ -399,7 +435,62 @@ namespace Quadtree
             }
         }
     }
+    template <class T,unsigned int max_depth, class Scalar, int max_object_radius, bool delete_empty_nodes>
+    void Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::MoveObject( const T& object, const Circle& old_pos, const Circle& new_pos)
+    {
+	assert(!m_bNoRemovals);
 
+        Scalar oldradius = old_pos.GetRadius();
+	Scalar newradius = new_pos.GetRadius();
+        Scalar myradius = GetMaxObjectRadius();
+	int depth = m_depth;
+	bool doIHaveItNow = false;
+	bool shouldIHaveItLater = false;
+	
+	if (depth == max_depth || oldradius  / (Scalar)2 > myradius)
+        {
+            // Too big for my children, should be mine.
+            doIHaveItNow = true;
+        }
+        
+        if(depth == max_depth || newradius / (Scalar)2 > myradius)
+	{
+	    shouldIHaveItLater = true;
+	}
+	
+	if(doIHaveItNow && shouldIHaveItLater) return; // then I'm done
+
+	if(doIHaveItNow)
+	{
+	    // I have it now but I shouldn't. 
+	    // this means it shrunk
+	    remove_specific(object);
+	    Add(new_pos,object);
+	    return;
+	}else if(shouldIHaveItLater){
+	    // Well, I didn't have it before because it was too small
+	    // but now I should, so it grew
+	    Remove(old_pos,object);
+	    add_specific(new_pos.GetCenter(),object); // I'll take it
+	    return;
+	}
+	// Alright it didn't change size.
+	
+	eQuadrant equadold = which_quad(old_pos.GetCenter());
+	eQuadrant equadnew = which_quad(new_pos.GetCenter());
+	
+	if(equadold == equadnew){
+	    NodePtr & ptr = which_child(equadold);
+	    ptr->MoveObject( object, old_pos,new_pos );
+	}else{
+	    NodePtr & old = which_child(equadold);
+	    NodePtr & newc = which_child(equadnew);
+	    old->Remove(old_pos,object);
+	    newc->Add(new_pos,object);
+	}
+
+	
+    }
     /**
      * @brief Whether a Vector falls within the bounds of this quad
      * @note the parent node should know this without asking
@@ -429,6 +520,7 @@ namespace Quadtree
         Circle mybounds = calculate_bounds();
         return mybounds.Intersects(circle);
     }
+    
 
     /**
      * @brief Calls the visitor on each object within the view circle
@@ -488,18 +580,6 @@ namespace Quadtree
         if (m_pBottomright != NULL) m_pBottomright->TraverseAll(visitor);
     }
 
-    /**
-     * @brief Change the position of an object already in the tree
-     *
-     * @param t the object that is moving
-     * @param newpos where the object is moving to
-     */
-    template <class T,unsigned int max_depth, class Scalar, int max_object_radius, bool delete_empty_nodes>
-    void Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::MoveObject(const T& t, const Circle& current_pos,const Circle& newpos)
-    {
-	Remove(current_pos,t);
-	Add(newpos,t);
-    }
 
 
     template <class T,unsigned int max_depth, class Scalar, int max_object_radius, bool delete_empty_nodes>
@@ -578,7 +658,7 @@ namespace Quadtree
             pChild->Prune();
             if (pChild->empty())
             {
-                delete pChild;
+                pPool->Return(pChild);
                 pChild = NULL;
             }
         }
@@ -682,6 +762,9 @@ namespace Quadtree
                                  m_quad.GetCenter().GetY() + quartersize),halfsize);
         }
     }
+    
+
+
 
 
 }
