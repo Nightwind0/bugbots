@@ -280,7 +280,7 @@ void App::DrawPixel32(SDL_Surface* screen,Uint32 color, int x, int y){
 }
 
 void App::DrawPixel(SDL_Surface* screen,Uint32 color, int x, int y){
-	if(x>0 && y>0)
+	if(x>0 && y>0 && x < screen->w && y < screen->h)
 		(this->*m_draw_pixel)(screen,color,x,y);
 }
 

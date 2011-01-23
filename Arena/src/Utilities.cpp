@@ -49,6 +49,16 @@ BugBots::Color Utilities::DefaultTeamColor (const Team& team)
     }
 }
 
+BugBots::QTVector Utilities::RandomPosition()
+{
+    int rand_x = rand() % (SCREEN_WIDTH/2);
+    int rand_y = rand() % (SCREEN_HEIGHT/2);
+    if(rand() % 2) rand_x = -rand_x;
+    if(rand() % 2) rand_y = -rand_y;
+    
+    return BugBots::QTVector(rand_x,rand_y);
+}
+
 int Utilities::GetConfig(eConfigValue config)
 {
     switch(config)

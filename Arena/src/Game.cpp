@@ -59,7 +59,7 @@ public:
     
     virtual bool Visit(BugBots::GameObject* object,const BugBots::QTNode* node){
 	BugBots::Color color = object->GetColor();
-	BugBots::QTVector pos = object->GetPos();
+	BugBots::QTVector pos = Game::WorldToView(object->GetPos());
 	(m_pApp->*m_functor)(color, pos.GetX(),pos.GetY());
 	return true;
     }
@@ -79,7 +79,7 @@ public:
     
     virtual bool Visit(BugBots::GameObject* object,const BugBots::QTNode* node){
 		BugBots::Color color = Utilities::CreateColor(0.2,0.2,0.2);
-		BugBots::QTVector pos = node->GetSquare().GetCenter();
+		BugBots::QTVector pos = Game::WorldToView(node->GetSquare().GetCenter());
 		int size = node->GetSquare().GetSize();
 		(m_pApp->*m_functor)(color, pos.GetX(),pos.GetY(),size);
 		return true;
@@ -89,7 +89,7 @@ private:
 	DrawFunctor m_functor;
 };
 
-Game::Game():m_quadtree(BugBots::QTNode::Square(BugBots::QTVector(0,0),QUADTREE_SIZE)){
+Game::Game():m_quadtree(BugBots::QTNode::Square(BugBots::QTVector(0,0),QUADTREE_SIZE)),m_drawNodes(false){
 }
 
 Game::~Game(){
@@ -136,15 +136,16 @@ bool Game::OnInit(){
 	MainBrain * red_brain = new MainBrain(TEAM_RED);
 	Clump * clump1 = new Clump();
 	Clump * clump2 = new Clump();
-	blue_brain->SetPos(QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT));
-	red_brain->SetPos(QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT));
-	clump1->SetPos(QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT));
-	clump2->SetPos(QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT));
+	blue_brain->SetPos(Utilities::RandomPosition());
+	red_brain->SetPos(Utilities::RandomPosition());
+	clump1->SetPos(Utilities::RandomPosition());
+	clump2->SetPos(Utilities::RandomPosition());
 	add_game_object(blue_brain);
 	add_game_object(red_brain);
 	add_game_object(clump1);
 	add_game_object(clump2);
 	m_paused = false;
+	m_drawNodes = false;
 	return true;
 }
 
@@ -175,8 +176,11 @@ void Game::OnRender(){
 
   SDL_FillRect( m_screen, &m_screen->clip_rect, SDL_MapRGB( m_screen->format, 0x0, 0x0, 0x0 ) ); 
   // Draw Quadtree Nodes
-  NodeDrawer<Game> nodedrawer(this,&Game::DrawSquare);
-  m_quadtree.TraverseAll(nodedrawer);
+  if(m_drawNodes)
+  {
+    NodeDrawer<Game> nodedrawer(this,&Game::DrawSquare);
+    m_quadtree.TraverseAll(nodedrawer);
+  }
   // Draw to screen
   Drawer<Game> drawer(this,&Game::DrawPixel);
   m_quadtree.TraverseAll(drawer);
@@ -201,6 +205,8 @@ void Game::OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode){
      OnExit();
   else if(sym == SDLK_p || sym == SDLK_SPACE)
       m_paused = !m_paused;
+  else if(sym == SDLK_n)
+      m_drawNodes = !m_drawNodes;
 }
 
 void Game::OnMouseFocus(){
@@ -240,6 +246,11 @@ void Game::OnExit (void){
 
 
 void Game::OnCleanup (void){
+}
+
+BugBots::QTVector Game::WorldToView(const BugBots::QTVector& pos)
+{
+    return BugBots::QTVector(pos.GetX() + SCREEN_WIDTH/2, pos.GetY() + SCREEN_HEIGHT/2);
 }
 
 std::ostream& Game::log()

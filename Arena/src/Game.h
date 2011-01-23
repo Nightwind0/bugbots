@@ -28,6 +28,8 @@ public:
 	virtual void OnExit (void);
 	virtual void OnCleanup (void);
 	
+	static BugBots::QTVector WorldToView(const BugBots::QTVector& pos); 
+	
 	std::ostream& log();
 protected:
 	virtual SDL_Surface * GetScreen()const{
@@ -51,6 +53,7 @@ private:
 	}	
 	SDL_Surface* m_screen;
 	bool m_paused;
+	bool m_drawNodes;
 	BugBots::QTRootNode m_quadtree;
 };
 
