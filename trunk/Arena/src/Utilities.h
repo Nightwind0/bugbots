@@ -36,6 +36,7 @@ public:
     };
     static Color CreateColor(float r, float g, float b, float a=0.0);
     static Color DefaultTeamColor (const Team& team);
+    static QTVector RandomPosition();
     static int GetConfig(eConfigValue);
 };
 

@@ -24,7 +24,7 @@
 using namespace BugBots;
 
 
-BugBot::BugBot(MainBrain& brain):m_mainbrain(brain),m_goal(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT),m_pItem(NULL),m_state(SEARCHING)
+BugBot::BugBot(MainBrain& brain):m_mainbrain(brain),m_goal(Utilities::RandomPosition()),m_pItem(NULL),m_state(SEARCHING)
 {
 }
 
@@ -89,7 +89,7 @@ void BugBot::Update()
 		    LOG("Dropping item");
 		    m_pItem = NULL;
 		    m_state = SEARCHING;
-		    m_goal = QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT);
+		    m_goal = Utilities::RandomPosition();
 		    break;
 		}
 	    }
@@ -103,16 +103,15 @@ void BugBot::Update()
 	    switch(m_state)
 	    {
 		case SEARCHING:
-		    m_goal = QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT);
+		    m_goal = Utilities::RandomPosition();
 		    break;
 		case GOING_HOME:
 		case TARGETING_ITEM:
 		    // if we get here, we didn't find anything
 		    LOG("Giving up");
 		    m_state = SEARCHING;
-		    m_goal =  QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT);
+		    m_goal =  Utilities::RandomPosition();
 		    break;
-
 		break;
 	    }
 	}
