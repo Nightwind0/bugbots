@@ -147,9 +147,9 @@ void Game::OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode){
 }
 
 void Game::OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode){
-  if(sym == SDLK_ESCAPE)
+  if(sym == SDLK_ESCAPE || sym ==SDLK_q)
      OnExit();
-  else if(sym == SDLK_p)
+  else if(sym == SDLK_p || sym == SDLK_SPACE)
       m_paused = !m_paused;
 }
 
