@@ -1,5 +1,6 @@
 #include "App.h"
 #include <cassert>
+#include <iostream>
 
 
 App::App():m_running(true){
@@ -280,6 +281,11 @@ void App::DrawPixel32(SDL_Surface* screen,Uint32 color, int x, int y){
 
 void App::DrawPixel(SDL_Surface* screen,Uint32 color, int x, int y){
 	(this->*m_draw_pixel)(screen,color,x,y);
+}
+
+void App::Log(const char*str)
+{
+    std::cout << str << std::endl;
 }
 
 void App::Quit (void){

@@ -27,6 +27,8 @@ public:
 
 	virtual void OnExit (void);
 	virtual void OnCleanup (void);
+	
+	std::ostream& log();
 protected:
 	virtual SDL_Surface * GetScreen()const{
 		return m_screen;
