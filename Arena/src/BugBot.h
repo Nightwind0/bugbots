@@ -21,19 +21,20 @@
 #define BUGBOT_H
 
 #include "GameObject.h"
+#include "MainBrain.h"
 
 namespace BugBots {
 
 class BugBot : public BugBots::GameObject
 {
 public:
-    BugBot(const Team& team);
+    BugBot(MainBrain& mainbrain);
     virtual ~BugBot();
     virtual Color GetColor() const;
     virtual void Update();
 private:
-    Team m_team;
     QTVector m_goal;
+    MainBrain& m_mainbrain;
 };
 
 }

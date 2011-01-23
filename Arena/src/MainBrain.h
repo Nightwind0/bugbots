@@ -30,6 +30,7 @@ public:
     MainBrain(const Team& team);
     virtual Color GetColor() const;
     virtual void Update();
+    Team GetTeam() const;
 private:
     void spawn_bugbot();
     Color  m_color;

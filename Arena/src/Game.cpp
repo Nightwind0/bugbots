@@ -97,20 +97,23 @@ bool Game::OnInit(){
 	red_brain->SetPos(QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT));
 	add_game_object(blue_brain);
 	add_game_object(red_brain);
+	m_paused = false;
 	return true;
 }
 
 void Game::OnLoop(){
-    std::list<GameObject*> objects;
-    Scanner scanner(objects);
-    m_quadtree.TraverseAll(scanner);
-    
-    
-    for(std::list<GameObject*>::iterator iter = objects.begin();
-	iter != objects.end(); iter++)
-	{
-	    (*iter)->Update();
-	}
+    if(!m_paused){
+	std::list<GameObject*> objects;
+	Scanner scanner(objects);
+	m_quadtree.TraverseAll(scanner);
+	
+	
+	for(std::list<GameObject*>::iterator iter = objects.begin();
+	    iter != objects.end(); iter++)
+	    {
+		(*iter)->Update();
+	    }
+    }
 	
 }
 
@@ -145,7 +148,9 @@ void Game::OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode){
 
 void Game::OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode){
   if(sym == SDLK_ESCAPE)
-    OnExit();
+     OnExit();
+  else if(sym == SDLK_p)
+      m_paused = !m_paused;
 }
 
 void Game::OnMouseFocus(){

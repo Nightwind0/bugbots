@@ -44,6 +44,7 @@ private:
 	    App::DrawPixel(m_screen,c,x,y);
 	}
 	SDL_Surface* m_screen;
+	bool m_paused;
 	BugBots::QTRootNode m_quadtree;
 };
 

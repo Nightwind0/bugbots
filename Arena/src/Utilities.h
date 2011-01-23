@@ -30,7 +30,9 @@ class Utilities
 public:
     enum eConfigValue {
 	BUGBOT_COST,
-	INITIAL_RESOURCES
+	INITIAL_RESOURCES,
+	FOOD_VALUE,
+	CORPSE_VALUE
     };
     static Color CreateColor(float r, float g, float b, float a=0.0);
     static Color DefaultTeamColor (const Team& team);
