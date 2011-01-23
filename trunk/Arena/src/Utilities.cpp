@@ -56,7 +56,7 @@ int Utilities::GetConfig(eConfigValue config)
 	case BUGBOT_COST:
 	    return 50;
 	case INITIAL_RESOURCES:
-	    return 10000;
+	    return 25000;
 	case FOOD_VALUE:
 	    return 35;
 	case CORPSE_VALUE:

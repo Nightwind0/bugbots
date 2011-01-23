@@ -5,15 +5,18 @@
 #include "../../common/Quadtree/Geometry.hxx"
 #include <tr1/memory>
 
-const int SCREEN_WIDTH = 500;
-const int SCREEN_HEIGHT = 500;
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
 const int SCREEN_BPP = 32;
+
+#define QUADTREE_DEPTH 5
 
 namespace BugBots {
     
+    
 class GameObject;
-typedef Quadtree::RootNode<GameObject*,3,int> QTRootNode;
-typedef Quadtree::Node<GameObject*,3,int> QTNode;
+typedef Quadtree::RootNode<GameObject*,QUADTREE_DEPTH,int> QTRootNode;
+typedef Quadtree::Node<GameObject*,QUADTREE_DEPTH,int> QTNode;
 typedef Quadtree::Geometry::Vector<int> QTVector;
 typedef Quadtree::Geometry::Circle<int> QTCircle;
 

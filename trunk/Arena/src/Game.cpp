@@ -65,7 +65,7 @@ private:
    DrawFunctor m_functor;
 };
 
-Game::Game():m_quadtree(BugBots::QTNode::Square(BugBots::QTVector(0,0),500)){
+Game::Game():m_quadtree(BugBots::QTNode::Square(BugBots::QTVector(0,0),800)){
 }
 
 Game::~Game(){
