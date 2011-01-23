@@ -40,6 +40,9 @@ BugBots::Color BugBot::GetColor() const
 
 void BugBot::Update()
 {
+    
+    std::list<GameObject*> blips;
+    scan(QTCircle(GetPos(),20),blips);
     QTVector pos = GetPos();
 	int xDif = abs(pos.GetX() - m_goal.GetX());
 	int yDif = abs(pos.GetY() - m_goal.GetY());

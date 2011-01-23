@@ -7,6 +7,20 @@
 
 using namespace BugBots;
 
+class ScannerPredicate 
+{
+public:
+    ScannerPredicate(const QTCircle& area):m_area(area){}
+    bool operator()(GameObject* pObject){
+	QTCircle objCircle(pObject->GetPos(),kGameObjectRadius);
+	if(objCircle.Intersects(m_area))
+	    return true;
+	else return false;	    
+    }
+private:
+    QTCircle m_area;
+};
+
 class Scanner : public QTNode::OurVisitor
 {
 public:
@@ -84,12 +98,14 @@ void Game::traverse_circle(const QTCircle& circle, QTNode::OurVisitor& visitor )
 void Game::scan_area(const BugBots::QTCircle& circle, std::list<GameObject*> & bucket )
 {
     Scanner scanner(bucket);
-    m_quadtree.Traverse(scanner,circle);
+    ScannerPredicate predicate(circle);
+    m_quadtree.Traverse(scanner,circle,predicate);
 }
 
 
 bool Game::OnInit(){
 	m_screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_HWSURFACE | SDL_DOUBLEBUF  ); 
+	m_quadtree.Split();
 	srand(time(NULL));
 	MainBrain * blue_brain = new MainBrain(TEAM_BLUE);
 	MainBrain * red_brain = new MainBrain(TEAM_RED);
