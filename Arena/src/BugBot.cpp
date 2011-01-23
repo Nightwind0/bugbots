@@ -64,7 +64,7 @@ void BugBot::Update()
 	{
 	    MainBrain * pMainBrain = dynamic_cast<MainBrain*>(*iter);
 	    // Don't assume theres only one mainbrain on your team
-	    if(pMainBrain->GetTeam() == m_mainbrain.GetTeam())
+	    if(pMainBrain && pMainBrain->GetTeam() == m_mainbrain.GetTeam())
 	    {
 		// I'm at my teams mainbrain and I have an item. Drop it.
 		m_pItem->Attach();
