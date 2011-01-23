@@ -30,7 +30,8 @@ public:
     GameObject();
     virtual ~GameObject();
     
-    void Destroy(); // Remove from the game
+    void Attach(); // put in the quadtree
+    void Detach(); // Remove from the quadtree
     void MoveTo(const QTVector& );
 
     QTVector GetPos() const;

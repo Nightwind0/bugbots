@@ -43,6 +43,7 @@ bool Food::Grab()
 {
     if(m_grabbed) return false;
     m_grabbed = true;
+    Detach();
     return true;
 }
 

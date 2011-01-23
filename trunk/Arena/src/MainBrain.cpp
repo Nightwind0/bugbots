@@ -49,7 +49,23 @@ void MainBrain::Update()
 void MainBrain::spawn_bugbot()
 {
     m_resources -= Utilities::GetConfig(Utilities::BUGBOT_COST);
-    QTCircle spawnCircle(GetPos(),20);
+    QTCircle scanCircle(GetPos(),10);
+    std::list<GameObject*> blips;
+    scan(scanCircle,blips);
+    
+    for(std::list<GameObject*>::iterator iter = blips.begin();
+	iter != blips.end(); iter++)
+	{
+	    Food * pFood = dynamic_cast<Food*>(*iter);
+	    
+	    if(pFood)
+	    {
+		if(!pFood->Eaten())
+		{
+		    pFood->Eat();
+		}
+	    }
+	}
     //std::list<GameObject*> objects;
     //scan(spawnCircle,objects);
     // Fuck it i'm putting the bugbot in my location
