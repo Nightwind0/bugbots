@@ -5,6 +5,7 @@
 #include "MainBrain.h"
 #include <sys/time.h>
 #include <list>
+#include <iostream>
 
 using namespace BugBots;
 
@@ -100,8 +101,8 @@ void Game::scan_area(const BugBots::QTCircle& circle, std::list<GameObject*> & b
 {
     Scanner scanner(bucket);
     ScannerPredicate predicate(circle);
-    //m_quadtree.Traverse(scanner,circle);
-    m_quadtree.Traverse(scanner,circle,predicate);
+    m_quadtree.Traverse(scanner,circle);
+    //m_quadtree.Traverse(scanner,circle,predicate);
 }
 
 
@@ -216,6 +217,10 @@ void Game::OnExit (void){
 void Game::OnCleanup (void){
 }
 
+std::ostream& Game::log()
+{
+    return std::cout;
+}
 
 
 App * GetApp(){

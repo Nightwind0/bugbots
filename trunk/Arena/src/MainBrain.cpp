@@ -40,16 +40,7 @@ Team MainBrain::GetTeam() const
 }
 
 void MainBrain::Update()
-{
-    if(m_resources >= Utilities::GetConfig(Utilities::BUGBOT_COST)){
-	spawn_bugbot();
-    }
-}
-
-void MainBrain::spawn_bugbot()
-{
-    m_resources -= Utilities::GetConfig(Utilities::BUGBOT_COST);
-    QTCircle scanCircle(GetPos(),10);
+{    QTCircle scanCircle(GetPos(),10);
     std::list<GameObject*> blips;
     scan(scanCircle,blips);
     
@@ -60,12 +51,19 @@ void MainBrain::spawn_bugbot()
 	    
 	    if(pFood)
 	    {
-		if(!pFood->Eaten())
-		{
-		    pFood->Eat();
-		}
+		pFood->Detach();
+	//	delete pFood;
 	    }
 	}
+    if(m_resources >= Utilities::GetConfig(Utilities::BUGBOT_COST)){
+	spawn_bugbot();
+    }
+}
+
+void MainBrain::spawn_bugbot()
+{
+    m_resources -= Utilities::GetConfig(Utilities::BUGBOT_COST);
+
     //std::list<GameObject*> objects;
     //scan(spawnCircle,objects);
     // Fuck it i'm putting the bugbot in my location

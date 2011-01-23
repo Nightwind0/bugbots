@@ -22,7 +22,7 @@
 
 using BugBots::Food;
 
-Food::Food():m_grabbed(false)
+Food::Food()
 {
 }
 
@@ -39,11 +39,4 @@ void Food::Update()
 {
 }
 
-bool Food::Grab()
-{
-    if(m_grabbed) return false;
-    m_grabbed = true;
-    Detach();
-    return true;
-}
 

@@ -38,6 +38,8 @@ public:
 
 	virtual void OnExit (void);
 	virtual void OnCleanup (void);
+	
+	virtual void Log(const char*str);
 
 protected:
 	void Quit();
@@ -57,5 +59,7 @@ private:
 };
 
 App* GetApp();
+
+#define LOG(x) GetApp()->Log(x)
 
 #endif

@@ -34,9 +34,15 @@ public:
     virtual Color GetColor() const;
     virtual void Update();
 private:
+    enum eState {
+	SEARCHING,
+	TARGETING_ITEM,
+	GOING_HOME
+    };
     GameObject* m_pItem;
     QTVector m_goal;
     MainBrain& m_mainbrain;
+    eState m_state;
 };
 
 }
