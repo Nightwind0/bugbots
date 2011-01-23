@@ -34,6 +34,11 @@ BugBots::Color MainBrain::GetColor() const
     return m_color;
 }
 
+Team MainBrain::GetTeam() const
+{
+    return m_team;
+}
+
 void MainBrain::Update()
 {
     if(m_resources >= Utilities::GetConfig(Utilities::BUGBOT_COST)){
@@ -50,7 +55,7 @@ void MainBrain::spawn_bugbot()
     // Fuck it i'm putting the bugbot in my location
     // until I think of a good way to look for a spot.
     // (loop over radius++)
-    BugBot * bb = new BugBot(m_team);
+    BugBot * bb = new BugBot(*this);
     spawn(bb,GetPos());
 }
 

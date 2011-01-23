@@ -23,7 +23,7 @@
 using namespace BugBots;
 
 
-BugBot::BugBot(const Team& team):m_team(team),m_goal(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT)
+BugBot::BugBot(MainBrain& brain):m_mainbrain(brain),m_goal(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT)
 {
 }
 
@@ -35,7 +35,7 @@ BugBot::~BugBot()
 
 BugBots::Color BugBot::GetColor() const
 {
-    return Utilities::DefaultTeamColor(m_team);
+    return Utilities::DefaultTeamColor(m_mainbrain.GetTeam());
 }
 
 void BugBot::Update()
