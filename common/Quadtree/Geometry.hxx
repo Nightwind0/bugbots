@@ -33,6 +33,9 @@ namespace Quadtree
 			Vector<Scalar> operator+(const Vector<Scalar>& rhs){
 			    return Vector<Scalar>(m_x+rhs.m_x,m_y+rhs.m_y);
 			}
+			bool operator==(const Vector<Scalar>& rhs){
+			    return m_x == rhs.m_x && m_y == rhs.m_y;
+			}
 		private:
 			Scalar m_x;
 			Scalar m_y;
