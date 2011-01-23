@@ -22,7 +22,9 @@ bba_SOURCES = \
 		src/Utilities.cpp \
 		src/Utilities.h \
 		src/Food.cpp \
-		src/Food.h
+		src/Food.h \
+		src/Clump.cpp \
+		src/Clump.h
 
 
 

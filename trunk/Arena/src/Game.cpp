@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Defs.h"
+#include "Clump.h"
 #include "GameObject.h"
 #include "MainBrain.h"
 #include <sys/time.h>
@@ -65,7 +66,7 @@ private:
    DrawFunctor m_functor;
 };
 
-Game::Game():m_quadtree(BugBots::QTNode::Square(BugBots::QTVector(0,0),800)){
+Game::Game():m_quadtree(BugBots::QTNode::Square(BugBots::QTVector(0,0),QUADTREE_SIZE)){
 }
 
 Game::~Game(){
@@ -110,10 +111,16 @@ bool Game::OnInit(){
 	srand(time(NULL));
 	MainBrain * blue_brain = new MainBrain(TEAM_BLUE);
 	MainBrain * red_brain = new MainBrain(TEAM_RED);
+	Clump * clump1 = new Clump();
+	Clump * clump2 = new Clump();
 	blue_brain->SetPos(QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT));
 	red_brain->SetPos(QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT));
+	clump1->SetPos(QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT));
+	clump2->SetPos(QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT));
 	add_game_object(blue_brain);
 	add_game_object(red_brain);
+	add_game_object(clump1);
+	add_game_object(clump2);
 	m_paused = false;
 	return true;
 }

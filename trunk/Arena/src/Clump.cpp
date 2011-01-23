@@ -17,27 +17,26 @@
 
 */
 
-#ifndef BUGBOT_H
-#define BUGBOT_H
-
-#include "GameObject.h"
-#include "MainBrain.h"
+#include "Clump.h"
+#include "Defs.h"
+#include "Utilities.h"
 #include "Food.h"
 
-namespace BugBots {
+using namespace BugBots;
 
-class BugBot : public BugBots::GameObject
+Clump::Clump():m_tics(0)
 {
-public:
-    BugBot(MainBrain& mainbrain);
-    virtual ~BugBot();
-    virtual Color GetColor() const;
-    virtual void Update();
-private:
-    Food* m_pFood;
-    QTVector m_goal;
-    MainBrain& m_mainbrain;
-};
-
 }
-#endif // BUGBOT_H
+
+void Clump::Update()
+{
+    if(++m_tics % 10 == 0)
+	spawn(new Food(),GetPos());
+    
+}
+
+BugBots::Color Clump::GetColor() const
+{
+    return Utilities::CreateColor(0.0,0.5,0.5);
+}
+
