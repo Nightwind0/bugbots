@@ -12,8 +12,8 @@ const int SCREEN_BPP = 32;
 namespace BugBots {
     
 class GameObject;
-typedef Quadtree::RootNode<GameObject*,4,int> QTRootNode;
-typedef Quadtree::Node<GameObject*,4,int> QTNode;
+typedef Quadtree::RootNode<GameObject*,3,int> QTRootNode;
+typedef Quadtree::Node<GameObject*,3,int> QTNode;
 typedef Quadtree::Geometry::Vector<int> QTVector;
 typedef Quadtree::Geometry::Circle<int> QTCircle;
 

@@ -735,6 +735,7 @@ namespace Quadtree
 
         m_pParent = pParent;
         m_quad = quad;
+	m_depth = calculate_depth();
 
         m_objects.clear();
     }
