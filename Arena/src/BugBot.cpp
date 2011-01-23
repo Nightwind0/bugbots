@@ -23,7 +23,7 @@
 using namespace BugBots;
 
 
-BugBot::BugBot(MainBrain& brain):m_mainbrain(brain),m_goal(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT),m_pFood(NULL)
+BugBot::BugBot(MainBrain& brain):m_mainbrain(brain),m_goal(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT),m_pItem(NULL)
 {
 }
 
@@ -35,26 +35,40 @@ BugBot::~BugBot()
 
 BugBots::Color BugBot::GetColor() const
 {
+    if(m_pItem) return m_pItem->GetColor();
     return Utilities::DefaultTeamColor(m_mainbrain.GetTeam());
 }
 
 void BugBot::Update()
 {
+    if(m_pItem)
+	m_pItem->SetPos(GetPos());
     
     std::list<GameObject*> blips;
-    scan(QTCircle(GetPos(),20),blips);
+    scan(QTCircle(GetPos(),10),blips);
     
     for(std::list<GameObject*>::const_iterator iter = blips.begin();
 	iter != blips.end(); iter++){
-	if(!m_pFood){
+	if(!m_pItem){
 	    Food * pFood = dynamic_cast<Food*>(*iter);
-	    if(pFood && !pFood->IsGrabbed()){
+	    
+	    if(pFood && pFood->GetPos() == GetPos()){
+		if(pFood->Grab())
+		    m_pItem = pFood;
+	    }else if(pFood && !pFood->IsGrabbed()){
 		m_goal = pFood->GetPos();
-		if(m_goal == GetPos()){
-		    if(pFood->Grab())
-			m_pFood = pFood;
-		}
 		break;
+	    }
+	}
+	else if(m_pItem)
+	{
+	    MainBrain * pMainBrain = dynamic_cast<MainBrain*>(*iter);
+	    // Don't assume theres only one mainbrain on your team
+	    if(pMainBrain->GetTeam() == m_mainbrain.GetTeam())
+	    {
+		// I'm at my teams mainbrain and I have an item. Drop it.
+		m_pItem->Attach();
+		m_pItem = NULL;
 	    }
 	}
 	}
@@ -64,7 +78,14 @@ void BugBot::Update()
     int yDif = abs(pos.GetY() - m_goal.GetY());
     
     if (xDif == 0 && yDif ==0) {
-	m_goal = QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT);
+	if(m_pItem)
+	{
+	    m_goal = m_mainbrain.GetPos();
+	}
+	else
+	{
+	    m_goal = QTVector(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT);
+	}
     }
     else {
 	if (xDif > yDif) {
@@ -85,10 +106,7 @@ void BugBot::Update()
 	}		
     }
     
-    if(m_pFood)
-    {
-	m_pFood->MoveTo(pos);
-    }
+
 }
 
 

@@ -34,7 +34,10 @@ public:
     virtual void Update();
     bool Grab();
     bool IsGrabbed(){ return m_grabbed; }
+    void Eat() { m_eaten = true; }
+    bool Eaten() { return m_eaten; }
 private:
+    bool m_eaten;
     bool m_grabbed;
 };
 

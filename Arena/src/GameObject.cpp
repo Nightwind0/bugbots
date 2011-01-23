@@ -30,7 +30,13 @@ GameObject::~GameObject()
 {
 }
 
-void GameObject::Destroy()
+void GameObject::Attach()
+{
+    Game* game = dynamic_cast<Game*>(GetApp());
+    game->add_game_object(this);  
+}
+
+void GameObject::Detach()
 {
     Game* game = dynamic_cast<Game*>(GetApp());
     game->remove_game_object(this);
@@ -52,7 +58,7 @@ void GameObject::spawn(GameObject * pObject, const QTVector& pos)
 {
     Game* game = dynamic_cast<Game*>(GetApp());
     pObject->SetPos(pos);
-    game->add_game_object(pObject);
+    pObject->Attach();
 }
 
 void GameObject::SetPos(const QTVector& pos)

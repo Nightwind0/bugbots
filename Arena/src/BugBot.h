@@ -34,7 +34,7 @@ public:
     virtual Color GetColor() const;
     virtual void Update();
 private:
-    Food* m_pFood;
+    GameObject* m_pItem;
     QTVector m_goal;
     MainBrain& m_mainbrain;
 };
