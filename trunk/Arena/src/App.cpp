@@ -297,7 +297,9 @@ void App::DrawSquare(SDL_Surface* screen,Uint32 color, int x, int y, int size){
 
 void App::Log(const char*str)
 {
+#ifndef NDEBUG
     std::cout << str << std::endl;
+#endif
 }
 
 void App::Quit (void){
