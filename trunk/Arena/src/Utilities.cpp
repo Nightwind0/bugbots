@@ -40,9 +40,9 @@ BugBots::Color Utilities::DefaultTeamColor (const Team& team)
     // Stupid for now. Later this will be data driven
     switch(team){
 	case TEAM_BLUE:
-	    return CreateColor(0,0,0.75);
+	    return CreateColor(0,0,1);
 	case TEAM_RED:
-	    return CreateColor(0.75,0,0);
+	    return CreateColor(1,0,0);
 	default:
 	    assert(0);
 	    return CreateColor(0,0,0);

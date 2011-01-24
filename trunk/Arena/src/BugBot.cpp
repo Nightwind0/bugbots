@@ -24,7 +24,7 @@
 using namespace BugBots;
 
 
-BugBot::BugBot(MainBrain& brain):m_mainbrain(brain),m_goal(Utilities::RandomPosition()),m_pItem(NULL),m_state(SEARCHING)
+BugBot::BugBot(MainBrain& brain):m_mainbrain(brain),m_pItem(NULL),m_state(SEARCHING),m_goal(0,0)
 {
 }
 
@@ -62,7 +62,7 @@ void BugBot::Update()
 			LOG("Grabbing food");
 			m_pItem = pFood;
 			m_state = GOING_HOME;
-			m_goal = m_mainbrain.GetPos();
+			StartMovingTo(m_mainbrain.GetPos());
 			break;
 		    }
 		}
@@ -72,7 +72,7 @@ void BugBot::Update()
 		
 		if(pFood)
 		{
-		    m_goal = pFood->GetPos();
+		    StartMovingTo(pFood->GetPos());
 		    m_state = TARGETING_ITEM;
 		    LOG("Found food");
 		    break;
@@ -89,52 +89,86 @@ void BugBot::Update()
 		    LOG("Dropping item");
 		    m_pItem = NULL;
 		    m_state = SEARCHING;
-		    m_goal = Utilities::RandomPosition();
+		    StartMovingTo(Utilities::RandomPosition());
 		    break;
 		}
 	    }
 	}
 	
-	QTVector pos = GetPos();
-	int xDif = abs(pos.GetX() - m_goal.GetX());
-	int yDif = abs(pos.GetY() - m_goal.GetY());
-	
-	if (xDif == 0 && yDif ==0) {
+	if (AtDest()) {
 	    switch(m_state)
 	    {
 		case SEARCHING:
-		    m_goal = Utilities::RandomPosition();
+		    StartMovingTo(Utilities::RandomPosition());
 		    break;
 		case GOING_HOME:
 		case TARGETING_ITEM:
 		    // if we get here, we didn't find anything
 		    LOG("Giving up");
 		    m_state = SEARCHING;
-		    m_goal =  Utilities::RandomPosition();
+		    StartMovingTo(Utilities::RandomPosition());
 		    break;
 		break;
 	    }
 	}
 	else {
-	    if (xDif > yDif) {
-		if (pos.GetX() > m_goal.GetX()) {
-		    MoveTo(QTVector(pos.GetX()-1,pos.GetY()));
-		}
-		else {
-		    MoveTo(QTVector(pos.GetX()+1,pos.GetY()));
-		}
-	    }
-	    else {
-		if (pos.GetY() > m_goal.GetY()) {
-		    MoveTo(QTVector(pos.GetX(),pos.GetY()-1));
-		}
-		else {
-		    MoveTo(QTVector(pos.GetX(),pos.GetY()+1));
-		}
-	    }		
+	    MoveStep();		
 	}
-	
-	
 }
 
+void BugBot::StartMovingTo(QTVector pos)
+{
+	m_goal = pos;
+	QTVector loc = GetPos();
+	m_dx = abs(loc.GetX() - pos.GetX());
+	m_dy = abs(loc.GetY() - pos.GetY());
+	m_sx = GetPos().GetX() < pos.GetX() ? 1 : -1;
+	m_sy = GetPos().GetY() < pos.GetY() ? 1 : -1;
+	m_err = m_dx - m_dy;
+}
+
+void BugBot::MoveStep()
+{
+	int x = GetPos().GetX();
+	int y = GetPos().GetY();
+	int e2 = 2*m_err;
+	if (e2 > -m_dy) {
+		m_err -= m_dy;
+		x += m_sx;
+	}
+	else if (e2 < m_dx) {
+		m_err += m_dx;
+		y += m_sy;
+	}
+	MoveTo(QTVector(x,y));
+}
+
+bool BugBot::AtDest() const
+{
+	return m_goal == GetPos();
+}
+
+
+/*
+ function line(x0, y0, x1, y1)
+ dx := abs(x1-x0)
+ dy := abs(y1-y0) 
+ if x0 < x1 then sx := 1 else sx := -1
+ if y0 < y1 then sy := 1 else sy := -1
+ err := dx-dy
+ 
+ loop
+ setPixel(x0,y0)
+ if x0 = x1 and y0 = y1 exit loop
+ e2 := 2*err
+ if e2 > -dy then 
+ err := err - dy
+ x0 := x0 + sx
+ end if
+ if e2 <  dx then 
+ err := err + dx
+ y0 := y0 + sy 
+ end if
+ end loop
+ */
 
