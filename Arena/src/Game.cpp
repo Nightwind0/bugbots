@@ -78,7 +78,7 @@ public:
     }
     
     virtual bool Visit(BugBots::GameObject* object,const BugBots::QTNode* node){
-		BugBots::Color color = Utilities::CreateColor(0.2,0.2,0.2);
+		BugBots::Color color = Utilities::CreateColor(0.1,0.1,0.1);
 		BugBots::QTVector pos = Game::WorldToView(node->GetSquare().GetCenter());
 		int size = node->GetSquare().GetSize();
 		(m_pApp->*m_functor)(color, pos.GetX(),pos.GetY(),size);
@@ -123,8 +123,8 @@ void Game::scan_area(const BugBots::QTCircle& circle, std::list<GameObject*> & b
 {
     Scanner scanner(bucket);
     ScannerPredicate predicate(circle);
-    m_quadtree.Traverse(scanner,circle);
-    //m_quadtree.Traverse(scanner,circle,predicate);
+    //m_quadtree.Traverse(scanner,circle);
+    m_quadtree.Traverse(scanner,circle,predicate);
 }
 
 
