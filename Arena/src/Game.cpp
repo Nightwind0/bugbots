@@ -130,7 +130,6 @@ void Game::scan_area(const BugBots::QTCircle& circle, std::list<GameObject*> & b
 
 bool Game::OnInit(){
 	m_screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_HWSURFACE | SDL_DOUBLEBUF  ); 
-	m_quadtree.Split();
 	srand(time(NULL));
 	MainBrain * blue_brain = new MainBrain(TEAM_BLUE);
 	MainBrain * red_brain = new MainBrain(TEAM_RED);
@@ -192,6 +191,7 @@ void Game::OnRender(){
   // Tell SDL to update the whole screen
   SDL_UpdateRect(m_screen, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT); 
   SDL_Flip(m_screen);
+  SDL_Delay(0);
 }
 
 void Game::OnMouseMove(int x, int y){

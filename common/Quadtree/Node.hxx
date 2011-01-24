@@ -183,6 +183,8 @@ namespace Quadtree
         Circle calculate_bounds()const;
 
         bool empty()const;
+	
+	bool nochildren() const;
         /**
          * @brief Add an object to this node
          * @param p The Vector at which the object currently exists
@@ -353,10 +355,10 @@ namespace Quadtree
     template <class T,unsigned int max_depth, class Scalar, int max_object_radius, bool delete_empty_nodes>
     Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::~Node()
     {
-        delete m_pTopleft;
-        delete m_pTopright;
-        delete m_pBottomleft;
-        delete m_pBottomright;
+	if(m_pTopleft) delete m_pTopleft;
+        if(m_pTopright) delete m_pTopright;
+        if(m_pBottomleft) delete m_pBottomleft;
+        if(m_pBottomright) delete m_pBottomright;
     }
 
     template <class T,unsigned int max_depth, class Scalar, int max_object_radius, bool delete_empty_nodes>
@@ -436,7 +438,7 @@ namespace Quadtree
 
             ptr->Remove(bounds,t);
 
-            if (!delete_empty_nodes && ptr->empty())
+            if (delete_empty_nodes && ptr->empty() && ptr->nochildren())
             {
                 Get_Node_Pool()->Return(ptr);
                 ptr = NULL;
@@ -490,10 +492,24 @@ namespace Quadtree
 	if(equadold == equadnew){
 	    NodePtr & ptr = which_child(equadold);
 	    ptr->MoveObject( object, old_pos,new_pos );
+	    if (delete_empty_nodes && ptr->empty() && ptr->nochildren())
+            {
+                Get_Node_Pool()->Return(ptr);
+                ptr = NULL;
+            }
 	}else{
 	    NodePtr & old = which_child(equadold);
 	    NodePtr & newc = which_child(equadnew);
 	    old->Remove(old_pos,object);
+	    if (delete_empty_nodes && old->empty() && old->nochildren())
+            {
+                Get_Node_Pool()->Return(old);
+                old = NULL;
+            }
+	    if(newc == NULL)
+	    {
+		create_child(newc,equadnew);
+	    }
 	    newc->Add(new_pos,object);
 	}
 
@@ -566,6 +582,13 @@ namespace Quadtree
     {
         return  m_objects.empty();
     }
+    
+    template <class T,unsigned int max_depth, class Scalar, int max_object_radius, bool delete_empty_nodes>
+    bool Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::nochildren() const
+    {
+        return  !m_pBottomleft && !m_pBottomright && !m_pTopleft && !m_pTopright;
+    }
+
 
 
     /**
