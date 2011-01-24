@@ -71,6 +71,7 @@ void MainBrain::spawn_bugbot()
     // (loop over radius++)
     BugBot * bb = new BugBot(*this);
     spawn(bb,GetPos());
+	bb->StartMovingTo(Utilities::RandomPosition());
 }
 
 

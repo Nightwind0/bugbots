@@ -33,6 +33,9 @@ public:
     virtual ~BugBot();
     virtual Color GetColor() const;
     virtual void Update();
+	void StartMovingTo(QTVector);
+	void MoveStep();
+	bool AtDest() const;
 private:
     enum eState {
 	SEARCHING,
@@ -43,6 +46,11 @@ private:
     QTVector m_goal;
     MainBrain& m_mainbrain;
     eState m_state;
+	int m_dx;
+	int m_dy;
+	int m_sx;
+	int m_sy;
+	int m_err;
 };
 
 }
