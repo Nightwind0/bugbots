@@ -421,12 +421,13 @@ namespace Quadtree
     void Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::Remove(const Circle &bounds,const T &t)
     {
         assert(!m_bNoRemovals);
-
+		this;
+		
         Scalar radius = bounds.GetRadius();
         Scalar myradius = GetMaxObjectRadius();
-	int depth = m_depth;
-
-        if (depth == max_depth || radius  / (Scalar)2 > myradius)
+		int depth = m_depth;
+		
+        if (depth == max_depth || radius >= myradius / (Scalar)2 )
         {
             // Too big for my children, should be mine.
             remove_specific(t);
@@ -435,9 +436,9 @@ namespace Quadtree
         {
             eQuadrant equad = which_quad(bounds.GetCenter());
             NodePtr & ptr = which_child(equad);
-
+			
             ptr->Remove(bounds,t);
-
+			
             if (delete_empty_nodes && ptr->empty() && ptr->nochildren())
             {
                 Get_Node_Pool()->Return(ptr);
@@ -445,76 +446,79 @@ namespace Quadtree
             }
         }
     }
+	
+	
     template <class T,unsigned int max_depth, class Scalar, int max_object_radius, bool delete_empty_nodes>
     void Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::MoveObject( const T& object, const Circle& old_pos, const Circle& new_pos)
     {
-	assert(!m_bNoRemovals);
-
+		assert(!m_bNoRemovals);
+		
         Scalar oldradius = old_pos.GetRadius();
-	Scalar newradius = new_pos.GetRadius();
+		Scalar newradius = new_pos.GetRadius();
         Scalar myradius = GetMaxObjectRadius();
-	int depth = m_depth;
-	bool doIHaveItNow = false;
-	bool shouldIHaveItLater = false;
-	
-	if (depth == max_depth || oldradius  / (Scalar)2 > myradius)
+		int depth = m_depth;
+		bool doIHaveItNow = false;
+		bool shouldIHaveItLater = false;
+		
+		if (depth == max_depth || oldradius >= myradius / (Scalar)2 )
         {
             // Too big for my children, should be mine.
             doIHaveItNow = true;
         }
         
-        if(depth == max_depth || newradius / (Scalar)2 > myradius)
-	{
-	    shouldIHaveItLater = true;
-	}
-	
-	if(doIHaveItNow && shouldIHaveItLater) return; // then I'm done
-
-	if(doIHaveItNow)
-	{
-	    // I have it now but I shouldn't. 
-	    // this means it shrunk
-	    remove_specific(object);
-	    Add(new_pos,object);
-	    return;
-	}else if(shouldIHaveItLater){
-	    // Well, I didn't have it before because it was too small
-	    // but now I should, so it grew
-	    Remove(old_pos,object);
-	    add_specific(new_pos.GetCenter(),object); // I'll take it
-	    return;
-	}
-	// Alright it didn't change size.
-	
-	eQuadrant equadold = which_quad(old_pos.GetCenter());
-	eQuadrant equadnew = which_quad(new_pos.GetCenter());
-	
-	if(equadold == equadnew){
-	    NodePtr & ptr = which_child(equadold);
-	    ptr->MoveObject( object, old_pos,new_pos );
-	    if (delete_empty_nodes && ptr->empty() && ptr->nochildren())
+        if(depth == max_depth || newradius >= myradius / (Scalar)2 )
+		{
+			shouldIHaveItLater = true;
+		}
+		
+		if(doIHaveItNow && shouldIHaveItLater) return; // then I'm done
+		
+		if(doIHaveItNow)
+		{
+			// I have it now but I shouldn't. 
+			// this means it shrunk
+			remove_specific(object);
+			Add(new_pos,object);
+			return;
+		}else if(shouldIHaveItLater){
+			// Well, I didn't have it before because it was too small
+			// but now I should, so it grew
+			Remove(old_pos,object);
+			add_specific(new_pos.GetCenter(),object); // I'll take it
+			return;
+		}
+		// Alright it didn't change size.
+		
+		eQuadrant equadold = which_quad(old_pos.GetCenter());
+		eQuadrant equadnew = which_quad(new_pos.GetCenter());
+		
+		if(equadold == equadnew){
+			NodePtr & ptr = which_child(equadold);
+			assert(ptr != NULL);
+			ptr->MoveObject( object, old_pos,new_pos );
+			if (delete_empty_nodes && ptr->empty() && ptr->nochildren())
             {
                 Get_Node_Pool()->Return(ptr);
                 ptr = NULL;
             }
-	}else{
-	    NodePtr & old = which_child(equadold);
-	    NodePtr & newc = which_child(equadnew);
-	    old->Remove(old_pos,object);
-	    if (delete_empty_nodes && old->empty() && old->nochildren())
+		}else{
+			NodePtr & old = which_child(equadold);
+			NodePtr & newc = which_child(equadnew);
+			assert(old != NULL);
+			old->Remove(old_pos,object);
+			if (delete_empty_nodes && old->empty() && old->nochildren())
             {
                 Get_Node_Pool()->Return(old);
                 old = NULL;
             }
-	    if(newc == NULL)
-	    {
-		create_child(newc,equadnew);
-	    }
-	    newc->Add(new_pos,object);
-	}
-
-	
+			if(newc == NULL)
+			{
+				create_child(newc,equadnew);
+			}
+			newc->Add(new_pos,object);
+		}
     }
+	
     /**
      * @brief Whether a Vector falls within the bounds of this quad
      * @note the parent node should know this without asking
