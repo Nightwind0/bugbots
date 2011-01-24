@@ -131,7 +131,7 @@ void BugBot::MoveStep()
 {
 	int x = GetPos().GetX();
 	int y = GetPos().GetY();
-	int e2 = 2*m_err;
+	int e2 = m_err << 1;
 	if (e2 > -m_dy) {
 		m_err -= m_dy;
 		x += m_sx;

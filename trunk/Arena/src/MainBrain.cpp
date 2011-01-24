@@ -52,6 +52,7 @@ void MainBrain::Update()
 	    if(pFood)
 	    {
 		pFood->Detach();
+			m_resources += Utilities::GetConfig(Utilities::FOOD_VALUE);
 	//	delete pFood;
 	    }
 	}
