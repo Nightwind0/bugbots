@@ -132,6 +132,12 @@ namespace Quadtree
         */
         void TraverseAll(OurVisitor &visitor) const;
 
+		/**
+		 * @brief Calls the visitor on all nodes here and below
+		 */
+        void TraverseNodes(OurVisitor &visitor) const;
+		
+		
         /**
         * @brief Create all child nodes under this node, even if they will be empty
         */
@@ -582,6 +588,23 @@ namespace Quadtree
         if (m_pBottomright != NULL) m_pBottomright->TraverseAll(visitor);
     }
 
+	
+    /**
+     * @brief Calls the visitor on all nodes here and below
+     */
+    template <class T,unsigned int max_depth, class Scalar, int max_object_radius, bool delete_empty_nodes>
+    void Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::TraverseNodes(OurVisitor &visitor)const
+    {
+        AutoSetter<bool> setter(m_bNoRemovals,true,false);
+		
+		visitor.Visit(0,this);
+		
+        if (m_pTopleft != NULL) m_pTopleft->TraverseNodes(visitor);
+        if (m_pTopright != NULL) m_pTopright->TraverseNodes(visitor);
+        if (m_pBottomleft != NULL) m_pBottomleft->TraverseNodes(visitor);
+        if (m_pBottomright != NULL) m_pBottomright->TraverseNodes(visitor);
+    }
+	
 
 
     template <class T,unsigned int max_depth, class Scalar, int max_object_radius, bool delete_empty_nodes>

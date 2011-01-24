@@ -179,7 +179,7 @@ void Game::OnRender(){
   if(m_drawNodes)
   {
     NodeDrawer<Game> nodedrawer(this,&Game::DrawSquare);
-    m_quadtree.TraverseAll(nodedrawer);
+    m_quadtree.TraverseNodes(nodedrawer);
   }
   // Draw to screen
   Drawer<Game> drawer(this,&Game::DrawPixel);
