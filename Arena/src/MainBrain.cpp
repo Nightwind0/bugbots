@@ -40,24 +40,25 @@ Team MainBrain::GetTeam() const
 }
 
 void MainBrain::Update()
-{    QTCircle scanCircle(GetPos(),10);
+{    
+	QTCircle scanCircle(GetPos(),10);
     std::list<GameObject*> blips;
     scan(scanCircle,blips);
     
     for(std::list<GameObject*>::iterator iter = blips.begin();
-	iter != blips.end(); iter++)
+		iter != blips.end(); iter++)
 	{
 	    Food * pFood = dynamic_cast<Food*>(*iter);
 	    
 	    if(pFood)
 	    {
-		pFood->Detach();
+			pFood->Detach();
 			m_resources += Utilities::GetConfig(Utilities::FOOD_VALUE);
-	//	delete pFood;
+			//	delete pFood;
 	    }
 	}
     if(m_resources >= Utilities::GetConfig(Utilities::BUGBOT_COST)){
-	spawn_bugbot();
+		spawn_bugbot();
     }
 }
 
