@@ -382,10 +382,10 @@ namespace Quadtree
         Scalar radius = bounds.GetRadius();
         uint cur_depth = m_depth;
         Scalar myradius = GetMaxObjectRadius();
-        if (cur_depth == max_depth || radius >= myradius / (Scalar)2 )
+        if (cur_depth == max_depth || radius > myradius / (Scalar) 4 )
         {
             // Too big for any children, add it to me
-            if (bounds.GetRadius() <= myradius){
+            if (bounds.GetRadius() <= myradius / (Scalar) 2 ){
                 add_specific(bounds.GetCenter(),t);
                 return this;
             }
@@ -427,7 +427,7 @@ namespace Quadtree
         Scalar myradius = GetMaxObjectRadius();
 		int depth = m_depth;
 		
-        if (depth == max_depth || radius >= myradius / (Scalar)2 )
+        if (depth == max_depth || radius > myradius  / (Scalar) 4 )
         {
             // Too big for my children, should be mine.
             remove_specific(t);
@@ -436,6 +436,8 @@ namespace Quadtree
         {
             eQuadrant equad = which_quad(bounds.GetCenter());
             NodePtr & ptr = which_child(equad);
+			
+			assert(ptr != NULL);
 			
             ptr->Remove(bounds,t);
 			
@@ -460,13 +462,13 @@ namespace Quadtree
 		bool doIHaveItNow = false;
 		bool shouldIHaveItLater = false;
 		
-		if (depth == max_depth || oldradius >= myradius / (Scalar)2 )
+		if (depth == max_depth || oldradius > myradius  / (Scalar) 4 )
         {
             // Too big for my children, should be mine.
             doIHaveItNow = true;
         }
         
-        if(depth == max_depth || newradius >= myradius / (Scalar)2 )
+        if(depth == max_depth || newradius > myradius  / (Scalar) 4 )
 		{
 			shouldIHaveItLater = true;
 		}
