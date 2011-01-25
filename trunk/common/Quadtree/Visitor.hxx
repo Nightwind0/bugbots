@@ -14,6 +14,13 @@ namespace Quadtree
 		*/
         virtual bool Visit(T,const Node* node)=0;
     };
+    
+    template<class Node>
+    class NodeVisitor
+    {
+    public:
+        virtual bool Visit(const Node* node)=0;
+    };
 }
 
 #endif

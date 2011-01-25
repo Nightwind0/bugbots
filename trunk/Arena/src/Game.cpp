@@ -69,7 +69,7 @@ private:
 };
 
 template <class T>
-class NodeDrawer : public QTNode::OurVisitor
+class NodeDrawer : public QTNode::NodeVisitor
 {
 public:
     typedef void (T::*DrawFunctor)(BugBots::Color, int, int, int);
@@ -77,7 +77,7 @@ public:
 		
     }
     
-    virtual bool Visit(BugBots::GameObject* object,const BugBots::QTNode* node){
+    virtual bool Visit(const BugBots::QTNode* node){
 		BugBots::Color color = Utilities::CreateColor(0.1,0.1,0.1);
 		BugBots::QTVector pos = Game::WorldToView(node->GetSquare().GetCenter());
 		int size = node->GetSquare().GetSize();
