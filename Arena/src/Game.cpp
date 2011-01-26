@@ -55,18 +55,81 @@ class Drawer : public QTNode::OurVisitor
 public:
     typedef void (T::*DrawFunctor)(BugBots::Color, int, int);
     Drawer(T* pApp,DrawFunctor functor):m_pApp(pApp),m_functor(functor){
-	
+        
     }
     
     virtual bool Visit(shared_ptr<BugBots::GameObject> object,const BugBots::QTNode* node){
-	BugBots::Color color = object->GetColor();
-	BugBots::QTVector pos = Game::WorldToView(object->GetPos());
-	(m_pApp->*m_functor)(color, pos.GetX(),pos.GetY());
-	return true;
+        BugBots::Color color = object->GetColor();
+        BugBots::QTVector pos = Game::WorldToView(object->GetPos());
+        (m_pApp->*m_functor)(color, pos.GetX(),pos.GetY());
+        return true;
     }
 private:
-   T* m_pApp;
-   DrawFunctor m_functor;
+    T* m_pApp;
+    DrawFunctor m_functor;
+};
+
+template <class T>
+class Counter : public QTNode::OurVisitor
+{
+public:
+    typedef void (T::*DrawFunctor)(BugBots::Color, int, int);
+    Counter(T* pApp,DrawFunctor functor):m_pApp(pApp),m_functor(functor),m_red(0),m_blue(0){
+        
+    }
+    
+    virtual bool Visit(shared_ptr<BugBots::GameObject> object,const BugBots::QTNode* node)
+    {
+        shared_ptr<BugBot> pBB = std::tr1::dynamic_pointer_cast<BugBot>(object);
+        if (pBB && !pBB->HasFlag(BugBot::DEAD))
+        {
+            switch (pBB->GetTeam())
+            {
+                case TEAM_RED:
+                    m_red++;
+                    break;
+                case TEAM_BLUE:
+                    m_blue++;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return true;
+    }
+    
+    void Draw()
+    {
+        if (m_blue == 0 && m_red == 0)
+        {
+            return;
+        }
+        else
+        {
+            float count = m_red + m_blue;
+            int i = 0;
+            float pRed = ((float)m_red)/count;
+            float pBlue = ((float)m_blue)/count;
+
+            while(i < (int)(pBlue * SCREEN_WIDTH))
+            {
+                (m_pApp->*m_functor)(Utilities::DefaultTeamColor(TEAM_BLUE),i,SCREEN_HEIGHT);
+                i++;
+            }
+            while (i <= SCREEN_WIDTH)
+            {
+                (m_pApp->*m_functor)(Utilities::DefaultTeamColor(TEAM_RED),i,SCREEN_HEIGHT);
+                i++;
+            }
+        }
+
+    }
+    
+private:
+    T* m_pApp;
+    DrawFunctor m_functor;
+    int m_red;
+    int m_blue;
 };
 
 template <class T>
@@ -130,7 +193,7 @@ void Game::scan_area(const BugBots::QTCircle& circle, std::list<shared_ptr<GameO
 
 
 bool Game::OnInit(){
-	m_screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_HWSURFACE | SDL_DOUBLEBUF  ); 
+	m_screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT + 1, 0, SDL_HWSURFACE | SDL_DOUBLEBUF  ); 
 	srand(time(NULL));
 	shared_ptr<GameObject> blue_brain = shared_ptr<GameObject>(new MainBrain(TEAM_BLUE));
 	shared_ptr<GameObject> red_brain = shared_ptr<GameObject>(new MainBrain(TEAM_RED));
@@ -167,32 +230,36 @@ void Game::OnLoop(){
 
 void Game::OnRender(){
 	// Lock surface if needed
-  if (SDL_MUSTLOCK(m_screen)) 
-    if (SDL_LockSurface(m_screen) < 0) 
-      return;
-
-  // Ask SDL for the time in milliseconds
-  int tick = SDL_GetTicks();
-
-  SDL_FillRect( m_screen, &m_screen->clip_rect, SDL_MapRGB( m_screen->format, 0x0, 0x0, 0x0 ) ); 
-  // Draw Quadtree Nodes
-  if(m_drawNodes)
-  {
-    NodeDrawer<Game> nodedrawer(this,&Game::DrawSquare);
-    m_quadtree.TraverseNodes(nodedrawer);
-  }
-  // Draw to screen
-  Drawer<Game> drawer(this,&Game::DrawPixel);
-  m_quadtree.TraverseAll(drawer);
-
-  // Unlock if needed
-  if (SDL_MUSTLOCK(m_screen)) 
-    SDL_UnlockSurface(m_screen);
-
-  // Tell SDL to update the whole screen
-  SDL_UpdateRect(m_screen, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT); 
-  SDL_Flip(m_screen);
-  SDL_Delay(0);
+    if (SDL_MUSTLOCK(m_screen)) 
+        if (SDL_LockSurface(m_screen) < 0) 
+            return;
+    
+    // Ask SDL for the time in milliseconds
+    int tick = SDL_GetTicks();
+    
+    SDL_FillRect( m_screen, &m_screen->clip_rect, SDL_MapRGB( m_screen->format, 0x0, 0x0, 0x0 ) ); 
+    // Draw Quadtree Nodes
+    if(m_drawNodes)
+    {
+        NodeDrawer<Game> nodedrawer(this,&Game::DrawSquare);
+        m_quadtree.TraverseNodes(nodedrawer);
+    }
+    // Draw to screen
+    Drawer<Game> drawer(this,&Game::DrawPixel);
+    m_quadtree.TraverseAll(drawer);
+    
+    Counter<Game> counter(this,&Game::DrawPixel);
+    m_quadtree.TraverseAll(counter);
+    counter.Draw();
+    
+    // Unlock if needed
+    if (SDL_MUSTLOCK(m_screen)) 
+        SDL_UnlockSurface(m_screen);
+    
+    // Tell SDL to update the whole screen
+    SDL_UpdateRect(m_screen, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT); 
+    SDL_Flip(m_screen);
+    SDL_Delay(0);
 }
 
 void Game::OnMouseMove(int x, int y){
