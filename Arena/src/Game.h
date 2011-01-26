@@ -31,6 +31,7 @@ public:
 	virtual void OnCleanup (void);
 	
 	static BugBots::QTVector WorldToView(const BugBots::QTVector& pos); 
+	static BugBots::QTVector ViewToWorld(int x, int y);
 	
 	std::ostream& log();
 protected:

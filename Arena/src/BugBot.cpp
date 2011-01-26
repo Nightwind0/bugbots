@@ -127,6 +127,7 @@ void BugBot::Update(shared_ptr<GameObject> _this)
 		    // I'm at my teams mainbrain and I have an item. Drop it.
 		    attach(m_pItem);
 		    m_pItem.reset();
+		    assert(!m_pItem);
 		    m_state = SEARCHING;
 		    StartMovingTo(Utilities::RandomPosition());
 		    break;
@@ -165,6 +166,7 @@ void BugBot::die() {
     if(m_pItem){
 	attach(m_pItem);
 	m_pItem.reset();
+	assert(!m_pItem);
     }
 }
 
@@ -199,6 +201,23 @@ bool BugBot::AtDest() const
 {
 	return m_goal == GetPos();
 }
+
+#if !defined(NDEBUG)
+std::ostream& BugBots::operator<<(std::ostream& stream,const BugBot& bb) {
+	switch(bb.m_state){
+	    case BugBot::SEARCHING:
+		stream <<  "Searching";
+		break;
+	    case BugBot::TARGETING_ITEM:
+		stream << "Targeting Item";
+		break;
+	    case BugBot::GOING_HOME:
+		stream << "Kaerimasu";
+		break;
+	}
+	return stream;
+    }
+#endif
 
 
 /*

@@ -23,8 +23,11 @@
 #include "GameObject.h"
 #include "MainBrain.h"
 #include "Food.h"
+#include <ostream>
 
 namespace BugBots {
+    
+
 
 class BugBot : public BugBots::GameObject
 {
@@ -38,10 +41,12 @@ public:
     virtual ~BugBot();
     virtual Color GetColor() const;
     virtual void Update(shared_ptr<GameObject> _this);
+    Team GetTeam() const { return m_mainbrain.GetTeam(); };
     void StartMovingTo(QTVector);
     bool HasFlag(eFlags flag) const;
     void SetFlag(eFlags flag);
     void RemoveFlag(eFlags flag);
+
 protected:
     void MoveStep(shared_ptr<GameObject> _this);
     bool AtDest() const;
@@ -63,7 +68,18 @@ private:
     int m_sy;
     int m_err;
     int m_age;
+    
+#if !defined(NDEBUG)
+    friend std::ostream& operator<<(std::ostream& stream,const BugBot& bb);
+#endif
 };
 
+#if !defined(NDEBUG)
+std::ostream& operator<<(std::ostream&, const BugBots::BugBot&);
+#endif
+
 }
+
+
+
 #endif // BUGBOT_H
