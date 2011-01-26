@@ -20,11 +20,12 @@
 #include "BugBot.h"
 #include "Utilities.h"
 #include "App.h"
+#include "Game.h"
 
 using namespace BugBots;
 
 
-BugBot::BugBot(MainBrain& brain):m_mainbrain(brain),m_pItem(NULL),m_state(SEARCHING),m_goal(0,0)
+BugBot::BugBot(MainBrain& brain):m_mainbrain(brain),m_state(SEARCHING),m_goal(0,0)
 {
 }
 
@@ -40,27 +41,29 @@ BugBots::Color BugBot::GetColor() const
     return Utilities::DefaultTeamColor(m_mainbrain.GetTeam());
 }
 
-void BugBot::Update()
+void BugBot::Update(shared_ptr<GameObject> _this)
 {
+    
     if(m_pItem)
 		m_pItem->SetPos(GetPos());
     
-    std::list<GameObject*> blips;
+    std::list<shared_ptr<GameObject> > blips;
     scan(QTCircle(GetPos(),10),blips);
     
-    for(std::list<GameObject*>::const_iterator iter = blips.begin();
+    for(std::list<shared_ptr<GameObject> >::const_iterator iter = blips.begin();
 	iter != blips.end(); iter++)
 	{
 	    if(m_state == TARGETING_ITEM)
 	    {
-		Food * pFood = dynamic_cast<Food*>(*iter);
+		//Food * pFood = dynamic_cast<Food*>(iter->get());
+		shared_ptr<Food> pFood = std::tr1::dynamic_pointer_cast<Food>(*iter);
 		if(pFood)
 		{
 		    if(pFood->GetPos() == GetPos())
 		    {
-			pFood->Detach();
+			detach(*iter);
 			LOG("Grabbing food");
-			m_pItem = pFood;
+			m_pItem = *iter;
 			m_state = GOING_HOME;
 			StartMovingTo(m_mainbrain.GetPos());
 			break;
@@ -68,8 +71,8 @@ void BugBot::Update()
 		}
 	    }
 	    else if(m_state == SEARCHING){
-		Food * pFood = dynamic_cast<Food*>(*iter);
-		
+		//Food * pFood = dynamic_cast<Food*>(iter->get());
+		shared_ptr<Food> pFood = std::tr1::dynamic_pointer_cast<Food>(*iter);
 		if(pFood)
 		{
 		    StartMovingTo(pFood->GetPos());
@@ -80,20 +83,22 @@ void BugBot::Update()
 	    }
 	    else if(m_state == GOING_HOME)
 	    {
-		MainBrain * pMainBrain = dynamic_cast<MainBrain*>(*iter);
+		//MainBrain * pMainBrain = dynamic_cast<MainBrain*>(iter->get());
+		shared_ptr<MainBrain> pMainBrain = std::tr1::dynamic_pointer_cast<MainBrain>(*iter);
 		// Don't assume theres only one mainbrain on your team
 		if(pMainBrain && (pMainBrain->GetTeam() == m_mainbrain.GetTeam()))
 		{
 		    // I'm at my teams mainbrain and I have an item. Drop it.
-		    m_pItem->Attach();
+		    attach(m_pItem);
 		    LOG("Dropping item");
-		    m_pItem = NULL;
+		    m_pItem.reset();
 		    m_state = SEARCHING;
 		    StartMovingTo(Utilities::RandomPosition());
 		    break;
 		}
 	    }
 	}
+	
 	
 	if (AtDest()) {
 	    switch(m_state)
@@ -112,8 +117,9 @@ void BugBot::Update()
 	    }
 	}
 	else {
-	    MoveStep();		
+	    MoveStep(_this);		
 	}
+	
 }
 
 void BugBot::StartMovingTo(QTVector pos)
@@ -127,7 +133,7 @@ void BugBot::StartMovingTo(QTVector pos)
 	m_err = m_dx - m_dy;
 }
 
-void BugBot::MoveStep()
+void BugBot::MoveStep(shared_ptr<GameObject> _this)
 {
 	int x = GetPos().GetX();
 	int y = GetPos().GetY();
@@ -140,7 +146,7 @@ void BugBot::MoveStep()
 		m_err += m_dx;
 		y += m_sy;
 	}
-	MoveTo(QTVector(x,y));
+	MoveTo(_this,QTVector(x,y));
 }
 
 bool BugBot::AtDest() const

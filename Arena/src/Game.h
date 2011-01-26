@@ -4,6 +4,8 @@
 #include "App.h"
 #include "Defs.h"
 
+using namespace BugBots;
+
 class Game : public App{
 public:
 	Game();
@@ -35,11 +37,11 @@ protected:
 	virtual SDL_Surface * GetScreen()const{
 		return m_screen;
 	}
-	void add_game_object(BugBots::GameObject* pObject);
-	void move_game_object(BugBots::GameObject* pObject, const BugBots::QTVector& new_pos);
-	void remove_game_object(BugBots::GameObject* pObject);
+	void add_game_object(shared_ptr<BugBots::GameObject> pObject);
+	void move_game_object(shared_ptr<BugBots::GameObject> pObject, const BugBots::QTVector& new_pos);
+	void remove_game_object(shared_ptr<BugBots::GameObject> pObject);
 	void traverse_circle(const BugBots::QTCircle& circle, BugBots::QTNode::OurVisitor& visitor );
-	void scan_area(const BugBots::QTCircle& circle, std::list<BugBots::GameObject*> & bucket );
+	void scan_area(const BugBots::QTCircle& circle, std::list<shared_ptr<BugBots::GameObject> > & bucket );
 
 private:
 	friend class BugBots::GameObject;

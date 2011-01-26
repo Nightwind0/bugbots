@@ -32,9 +32,11 @@ public:
     BugBot(MainBrain& mainbrain);
     virtual ~BugBot();
     virtual Color GetColor() const;
-    virtual void Update();
-	void StartMovingTo(QTVector);
-	void MoveStep();
+    virtual void Update(shared_ptr<GameObject> _this);
+    void StartMovingTo(QTVector);
+protected:
+
+	void MoveStep(shared_ptr<GameObject> _this);
 	bool AtDest() const;
 private:
     enum eState {
@@ -42,7 +44,7 @@ private:
 	TARGETING_ITEM,
 	GOING_HOME
     };
-    GameObject* m_pItem;
+    shared_ptr<GameObject> m_pItem;
     QTVector m_goal;
     MainBrain& m_mainbrain;
     eState m_state;

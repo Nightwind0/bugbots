@@ -14,7 +14,7 @@ class ScannerPredicate
 {
 public:
     ScannerPredicate(const QTCircle& area):m_area(area){}
-    bool operator()(GameObject* pObject){
+    bool operator()(shared_ptr<GameObject> pObject){
 	QTCircle objCircle(pObject->GetPos(),kGameObjectRadius);
 	if(objCircle.Intersects(m_area))
 	    return true;
@@ -27,15 +27,15 @@ private:
 class Scanner : public QTNode::OurVisitor
 {
 public:
-    Scanner(std::list<GameObject*> &bucket):m_bucket(bucket){
+    Scanner(std::list<shared_ptr<GameObject> > &bucket):m_bucket(bucket){
     }
     
-    virtual bool Visit(BugBots::GameObject* object,const BugBots::QTNode* node){
+    virtual bool Visit(shared_ptr<BugBots::GameObject> object,const BugBots::QTNode* node){
 	m_bucket.push_back(object);
 	return true;
     }
 private:
-    std::list<GameObject*>& m_bucket;
+    std::list<shared_ptr<GameObject> >& m_bucket;
 };
 
 
@@ -57,7 +57,7 @@ public:
 	
     }
     
-    virtual bool Visit(BugBots::GameObject* object,const BugBots::QTNode* node){
+    virtual bool Visit(shared_ptr<BugBots::GameObject> object,const BugBots::QTNode* node){
 	BugBots::Color color = object->GetColor();
 	BugBots::QTVector pos = Game::WorldToView(object->GetPos());
 	(m_pApp->*m_functor)(color, pos.GetX(),pos.GetY());
@@ -69,7 +69,7 @@ private:
 };
 
 template <class T>
-class NodeDrawer : public QTNode::NodeVisitor
+class NodeDrawer : public QTNode::OurNodeVisitor
 {
 public:
     typedef void (T::*DrawFunctor)(BugBots::Color, int, int, int);
@@ -95,13 +95,13 @@ Game::Game():m_quadtree(BugBots::QTNode::Square(BugBots::QTVector(0,0),QUADTREE_
 Game::~Game(){
 }
 
-void Game::add_game_object(GameObject* pObject)
+void Game::add_game_object(shared_ptr<GameObject> pObject)
 {
     QTCircle circle(pObject->GetPos(),kGameObjectRadius);
     m_quadtree.Add(circle,pObject);
 }
 
-void Game::move_game_object(BugBots::GameObject* pObject, const QTVector& new_pos)
+void Game::move_game_object(shared_ptr<BugBots::GameObject> pObject, const QTVector& new_pos)
 {
     m_quadtree.MoveObject(pObject,QTCircle(pObject->GetPos(),kGameObjectRadius),QTCircle(new_pos,kGameObjectRadius));
 //   m_quadtree.Remove(QTCircle(pObject->GetPos(),kGameObjectRadius),pObject);
@@ -109,7 +109,7 @@ void Game::move_game_object(BugBots::GameObject* pObject, const QTVector& new_po
     pObject->SetPos(new_pos);
 }
 
-void Game::remove_game_object(BugBots::GameObject* pObject)
+void Game::remove_game_object(shared_ptr<BugBots::GameObject> pObject)
 {
     m_quadtree.Remove(QTCircle(pObject->GetPos(),kGameObjectRadius),pObject);
 }
@@ -119,7 +119,7 @@ void Game::traverse_circle(const QTCircle& circle, QTNode::OurVisitor& visitor )
     m_quadtree.Traverse(visitor,circle);
 }
 
-void Game::scan_area(const BugBots::QTCircle& circle, std::list<GameObject*> & bucket )
+void Game::scan_area(const BugBots::QTCircle& circle, std::list<shared_ptr<GameObject> > & bucket )
 {
     Scanner scanner(bucket);
     ScannerPredicate predicate(circle);
@@ -131,10 +131,10 @@ void Game::scan_area(const BugBots::QTCircle& circle, std::list<GameObject*> & b
 bool Game::OnInit(){
 	m_screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_HWSURFACE | SDL_DOUBLEBUF  ); 
 	srand(time(NULL));
-	MainBrain * blue_brain = new MainBrain(TEAM_BLUE);
-	MainBrain * red_brain = new MainBrain(TEAM_RED);
-	Clump * clump1 = new Clump();
-	Clump * clump2 = new Clump();
+	shared_ptr<GameObject> blue_brain = shared_ptr<GameObject>(new MainBrain(TEAM_BLUE));
+	shared_ptr<GameObject> red_brain = shared_ptr<GameObject>(new MainBrain(TEAM_RED));
+	shared_ptr<GameObject> clump1 = shared_ptr<GameObject>(new Clump());
+	shared_ptr<GameObject> clump2 = shared_ptr<GameObject>(new Clump());
 	blue_brain->SetPos(Utilities::RandomPosition());
 	red_brain->SetPos(Utilities::RandomPosition());
 	clump1->SetPos(Utilities::RandomPosition());
@@ -150,15 +150,15 @@ bool Game::OnInit(){
 
 void Game::OnLoop(){
     if(!m_paused){
-	std::list<GameObject*> objects;
+	std::list<shared_ptr<GameObject> > objects;
 	Scanner scanner(objects);
 	m_quadtree.TraverseAll(scanner);
 	
 	
-	for(std::list<GameObject*>::iterator iter = objects.begin();
+	for(std::list<shared_ptr<GameObject> >::iterator iter = objects.begin();
 	    iter != objects.end(); iter++)
 	    {
-		(*iter)->Update();
+		(*iter)->Update(*iter);
 	    }
     }
 	

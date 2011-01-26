@@ -30,35 +30,36 @@ GameObject::~GameObject()
 {
 }
 
-void GameObject::Attach()
+
+void GameObject::MoveTo(shared_ptr<GameObject> _this, const QTVector& pos)
 {
     Game* game = dynamic_cast<Game*>(GetApp());
-    game->add_game_object(this);  
+    game->move_game_object(_this,pos);
 }
 
-void GameObject::Detach()
+void GameObject::attach(shared_ptr<GameObject> object)
 {
     Game* game = dynamic_cast<Game*>(GetApp());
-    game->remove_game_object(this);
+    game->add_game_object(object);
 }
 
-void GameObject::MoveTo(const QTVector& pos)
+void GameObject::detach(shared_ptr<GameObject> object)
 {
     Game* game = dynamic_cast<Game*>(GetApp());
-    game->move_game_object(this,pos);
+    game->remove_game_object(object);
 }
 
-void GameObject::scan(const QTCircle& area, std::list<GameObject*>& bucket)
+void GameObject::scan(const QTCircle& area, std::list<shared_ptr<GameObject> >& bucket)
 {
     Game* game = dynamic_cast<Game*>(GetApp());
     game->scan_area(area,bucket);
 }
 
-void GameObject::spawn(GameObject * pObject, const QTVector& pos)
+void GameObject::spawn(shared_ptr<GameObject> pObject, const QTVector& pos)
 {
     Game* game = dynamic_cast<Game*>(GetApp());
     pObject->SetPos(pos);
-    pObject->Attach();
+    game->add_game_object(pObject);
 }
 
 void GameObject::SetPos(const QTVector& pos)

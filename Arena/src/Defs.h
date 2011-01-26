@@ -15,9 +15,13 @@ const int QUADTREE_SIZE = 800;
 namespace BugBots {
     
     
+    
+using std::tr1::shared_ptr;
+
+    
 class GameObject;
-typedef Quadtree::RootNode<GameObject*,QUADTREE_DEPTH,int> QTRootNode;
-typedef Quadtree::Node<GameObject*,QUADTREE_DEPTH,int> QTNode;
+typedef Quadtree::RootNode<shared_ptr<GameObject>,QUADTREE_DEPTH,int> QTRootNode;
+typedef Quadtree::Node<shared_ptr<GameObject>,QUADTREE_DEPTH,int> QTNode;
 typedef Quadtree::Geometry::Vector<int> QTVector;
 typedef Quadtree::Geometry::Circle<int> QTCircle;
 typedef Quadtree::Geometry::Square<int> QTSquare;
@@ -32,7 +36,6 @@ struct Color
     unsigned char a;
 };
 
-template <typename T> struct SharedPtr { typedef std::tr1::shared_ptr<T> Type; };
 
 // Enum for now, later will likely be class
 enum Team {

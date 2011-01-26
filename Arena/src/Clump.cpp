@@ -28,10 +28,10 @@ Clump::Clump():m_tics(0)
 {
 }
 
-void Clump::Update()
+void Clump::Update(shared_ptr<GameObject> _this)
 {
-  //  if(++m_tics % 10 == 0)
-	spawn(new Food(),GetPos());
+    if(++m_tics % 10 == 0)
+	spawn(shared_ptr<GameObject>(new Food()),GetPos());
     
 }
 

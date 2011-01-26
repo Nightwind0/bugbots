@@ -29,21 +29,21 @@ class GameObject
 public:
     GameObject();
     virtual ~GameObject();
-    
-    void Attach(); // put in the quadtree
-    void Detach(); // Remove from the quadtree
-    void MoveTo(const QTVector& );
+
+    void MoveTo(shared_ptr<GameObject> _this, const QTVector& );
 
     QTVector GetPos() const;
     virtual Color GetColor() const=0;
-    virtual void Update()=0;
+    virtual void Update(shared_ptr<GameObject> _this)=0;
     
     // To be called by the Game only.
     // Everyone else call MoveTo
     void SetPos(const QTVector& );
 protected:
-    void scan(const QTCircle& area, std::list<GameObject*>& bucket);
-    void spawn(GameObject * pObject, const QTVector& pos);
+    void scan(const QTCircle& area, std::list<shared_ptr<GameObject> >& bucket);
+    void spawn(shared_ptr<GameObject> pObject, const QTVector& pos);
+    void attach(shared_ptr<GameObject> object);
+    void detach(shared_ptr<GameObject> object);
 private:
     QTVector m_pos;    
 };

@@ -29,7 +29,7 @@ class MainBrain : public BugBots::GameObject
 public:
     MainBrain(const Team& team);
     virtual Color GetColor() const;
-    virtual void Update();
+    virtual void Update(shared_ptr<GameObject> _this);
     Team GetTeam() const;
 private:
     void spawn_bugbot();

@@ -27,7 +27,7 @@ namespace Quadtree
         typedef Geometry::Square<Scalar> Square;
         typedef Geometry::Circle<Scalar> Circle;
         typedef Visitor<T,OurNode> OurVisitor;
-        typedef NodeVisitor<OurNode> NodeVisitor;
+        typedef NodeVisitor<OurNode> OurNodeVisitor;
         typedef NodePool<T,max_depth,Scalar,max_object_radius,delete_empty_nodes> OurNodePool;
 
 
@@ -136,7 +136,7 @@ namespace Quadtree
 		/**
 		 * @brief Calls the visitor on all nodes here and below
 		 */
-        void TraverseNodes(NodeVisitor &visitor) const;
+        void TraverseNodes(OurNodeVisitor &visitor) const;
 		
 		
         /**
@@ -623,11 +623,11 @@ namespace Quadtree
      * @brief Calls the visitor on all nodes here and below
      */
     template <class T,unsigned int max_depth, class Scalar, int max_object_radius, bool delete_empty_nodes>
-    void Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::TraverseNodes(NodeVisitor &visitor)const
+    void Node<T,max_depth,Scalar,max_object_radius,delete_empty_nodes>::TraverseNodes(OurNodeVisitor &visitor)const
     {
         AutoSetter<bool> setter(m_bNoRemovals,true,false);
 		
-		visitor.Visit(this);
+	visitor.Visit(this);
 		
         if (m_pTopleft != NULL) m_pTopleft->TraverseNodes(visitor);
         if (m_pTopright != NULL) m_pTopright->TraverseNodes(visitor);
