@@ -17,6 +17,7 @@ int App::Run(){
 	PickDrawFunction();
 
 	SDL_Event event;
+	m_loops = 0;
 
 	while(m_running){
 		while(SDL_PollEvent(&event)) {
@@ -24,6 +25,13 @@ int App::Run(){
         }
 		OnLoop();
 		OnRender();
+		m_loops++;
+		if(m_loops % 100 == 0){
+		    double loops_per_tick = (double)m_loops / (double)SDL_GetTicks();
+		    
+		    std::cout << loops_per_tick << " loops per tick" << std::endl;
+		}
+
 	}
 
 	OnCleanup();

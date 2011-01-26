@@ -56,6 +56,7 @@ private:
 	typedef void (App::*DrawPixelFunc)(SDL_Surface*, Uint32 color, int x, int y);
 	DrawPixelFunc m_draw_pixel;
 	bool m_running;
+	int m_loops;
 
 };
 
