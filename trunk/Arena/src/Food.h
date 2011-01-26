@@ -31,7 +31,7 @@ public:
     Food();
     virtual ~Food();
     virtual BugBots::Color GetColor() const;
-    virtual void Update();
+    virtual void Update(shared_ptr<GameObject> ptr);
 
 private:
 

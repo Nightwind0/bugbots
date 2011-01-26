@@ -31,7 +31,7 @@ class Clump : public BugBots::GameObject
 public:
     Clump();
     virtual ~Clump(){}
-    virtual void Update();
+    virtual void Update(shared_ptr<GameObject> _this);
     virtual BugBots::Color GetColor() const;
 private:
     unsigned int m_tics;

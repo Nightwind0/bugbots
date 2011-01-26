@@ -35,7 +35,7 @@ BugBots::Color Food::GetColor() const
     return Utilities::CreateColor(0.0,0.75,0.0);
 }
 
-void Food::Update()
+void Food::Update(shared_ptr<GameObject> _this)
 {
 }
 

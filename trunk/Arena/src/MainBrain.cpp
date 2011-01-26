@@ -39,20 +39,21 @@ Team MainBrain::GetTeam() const
     return m_team;
 }
 
-void MainBrain::Update()
+void MainBrain::Update(shared_ptr<GameObject> _this)
 {    
 	QTCircle scanCircle(GetPos(),10);
-    std::list<GameObject*> blips;
+    std::list<shared_ptr<GameObject> > blips;
     scan(scanCircle,blips);
     
-    for(std::list<GameObject*>::iterator iter = blips.begin();
+    for(std::list<shared_ptr<GameObject> >::iterator iter = blips.begin();
 		iter != blips.end(); iter++)
 	{
-	    Food * pFood = dynamic_cast<Food*>(*iter);
+	    //Food * pFood = dynamic_cast<Food*>(iter->get());
+	    shared_ptr<Food> pFood = std::tr1::dynamic_pointer_cast<Food>(*iter);
 	    
 	    if(pFood)
 	    {
-			pFood->Detach();
+			detach(*iter);
 			m_resources += Utilities::GetConfig(Utilities::FOOD_VALUE);
 			//	delete pFood;
 	    }
@@ -71,9 +72,10 @@ void MainBrain::spawn_bugbot()
     // Fuck it i'm putting the bugbot in my location
     // until I think of a good way to look for a spot.
     // (loop over radius++)
-    BugBot * bb = new BugBot(*this);
+    shared_ptr<GameObject>  bb = shared_ptr<GameObject>(new BugBot(*this));
     spawn(bb,GetPos());
-	bb->StartMovingTo(Utilities::RandomPosition());
+    shared_ptr<BugBot> pBB = std::tr1::dynamic_pointer_cast<BugBot>(bb);
+    pBB->StartMovingTo(Utilities::RandomPosition());
 }
 
 
