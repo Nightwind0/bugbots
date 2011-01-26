@@ -48,26 +48,51 @@ void MainBrain::Update(shared_ptr<GameObject> _this)
     for(std::list<shared_ptr<GameObject> >::iterator iter = blips.begin();
 		iter != blips.end(); iter++)
 	{
-	    //Food * pFood = dynamic_cast<Food*>(iter->get());
-	    shared_ptr<Food> pFood = std::tr1::dynamic_pointer_cast<Food>(*iter);
-	    shared_ptr<BugBot> pBB = std::tr1::dynamic_pointer_cast<BugBot>(*iter);
+        Take(*iter);
 	    
-	    if(pFood)
-	    {
-		detach(*iter);
-		m_resources += Utilities::GetConfig(Utilities::FOOD_VALUE);
-	    }
-	    else if(pBB)
-	    {
-		if(pBB->HasFlag(BugBot::DEAD)){
-		    detach(*iter);
-		    m_resources += Utilities::GetConfig(Utilities::CORPSE_VALUE);
-		}
-	    }
+        //Food * pFood = dynamic_cast<Food*>(iter->get());
+//	    shared_ptr<Food> pFood = std::tr1::dynamic_pointer_cast<Food>(*iter);
+//	    shared_ptr<BugBot> pBB = std::tr1::dynamic_pointer_cast<BugBot>(*iter);
+//	    
+//	    if(pFood)
+//	    {
+//		detach(*iter);
+//		m_resources += Utilities::GetConfig(Utilities::FOOD_VALUE);
+//	    }
+//	    else if(pBB)
+//	    {
+//		if(pBB->HasFlag(BugBot::DEAD)){
+//		    detach(*iter);
+//		    m_resources += Utilities::GetConfig(Utilities::CORPSE_VALUE);
+//		}
+//	    }
 	}
     if(m_resources >= Utilities::GetConfig(Utilities::BUGBOT_COST)){
 		spawn_bugbot();
     }
+}
+
+bool MainBrain::Take(shared_ptr<GameObject> p_Item)
+{
+    //Food * pFood = dynamic_cast<Food*>(iter->get());
+    shared_ptr<Food> pFood = std::tr1::dynamic_pointer_cast<Food>(p_Item);
+    shared_ptr<BugBot> pBB = std::tr1::dynamic_pointer_cast<BugBot>(p_Item);
+    
+    if(pFood)
+    {
+		detach(p_Item);
+		m_resources += Utilities::GetConfig(Utilities::FOOD_VALUE);
+        return true;
+    }
+    else if(pBB)
+    {
+		if(pBB->HasFlag(BugBot::DEAD)){
+		    detach(p_Item);
+		    m_resources += Utilities::GetConfig(Utilities::CORPSE_VALUE);
+            return true;
+		}
+    }
+    return false;
 }
 
 void MainBrain::spawn_bugbot()
