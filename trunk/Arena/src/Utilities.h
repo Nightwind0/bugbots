@@ -32,10 +32,13 @@ public:
 	BUGBOT_COST,
 	INITIAL_RESOURCES,
 	FOOD_VALUE,
-	CORPSE_VALUE
+	CORPSE_VALUE,
+	FOOD_SPAWN_FREQUENCY,
+	BUGBOT_LIFE_EXPECTANCY
     };
     static Color CreateColor(float r, float g, float b, float a=0.0);
     static Color DefaultTeamColor (const Team& team);
+    static Color CorpseColor(const Team& team);
     static QTVector RandomPosition();
     static int GetConfig(eConfigValue);
 };

@@ -25,7 +25,7 @@
 using namespace BugBots;
 
 
-BugBot::BugBot(MainBrain& brain):m_mainbrain(brain),m_state(SEARCHING),m_goal(0,0)
+BugBot::BugBot(MainBrain& brain):m_mainbrain(brain),m_state(SEARCHING),m_goal(0,0),m_flags(0),m_age(0)
 {
 }
 
@@ -33,17 +33,34 @@ BugBot::~BugBot()
 {
 }
 
+bool BugBot::HasFlag(eFlags flag) const
+{
+    return m_flags & (1 << flag);
+}
+
+void BugBot::SetFlag(eFlags flag)
+{
+    m_flags |= (1 << flag);
+}
+
+void BugBot::RemoveFlag(eFlags flag)
+{
+    m_flags &= ~(1 << flag);
+}
 
 
 BugBots::Color BugBot::GetColor() const
 {
     if(m_pItem) return m_pItem->GetColor();
+    if(m_flags & (1 << DEAD)) 
+	return Utilities::CorpseColor(m_mainbrain.GetTeam());
     return Utilities::DefaultTeamColor(m_mainbrain.GetTeam());
 }
 
 void BugBot::Update(shared_ptr<GameObject> _this)
 {
-    
+    if(HasFlag(DEAD)) return; // Can't act if dead.
+
     if(m_pItem)
 		m_pItem->SetPos(GetPos());
     
@@ -57,28 +74,47 @@ void BugBot::Update(shared_ptr<GameObject> _this)
 	    {
 		//Food * pFood = dynamic_cast<Food*>(iter->get());
 		shared_ptr<Food> pFood = std::tr1::dynamic_pointer_cast<Food>(*iter);
+		shared_ptr<BugBot> pBot = std::tr1::dynamic_pointer_cast<BugBot>(*iter);
 		if(pFood)
 		{
 		    if(pFood->GetPos() == GetPos())
 		    {
 			detach(*iter);
-			LOG("Grabbing food");
 			m_pItem = *iter;
 			m_state = GOING_HOME;
 			StartMovingTo(m_mainbrain.GetPos());
 			break;
 		    }
 		}
+		else if(pBot)
+		{
+		    if(pBot->HasFlag(BugBot::DEAD) && pBot->GetPos() == GetPos())
+		    {
+			detach(*iter);
+			m_pItem = *iter;
+			m_state = GOING_HOME;
+			StartMovingTo(m_mainbrain.GetPos());
+		    }
+		}
 	    }
 	    else if(m_state == SEARCHING){
 		//Food * pFood = dynamic_cast<Food*>(iter->get());
 		shared_ptr<Food> pFood = std::tr1::dynamic_pointer_cast<Food>(*iter);
+		shared_ptr<BugBot> pBot = std::tr1::dynamic_pointer_cast<BugBot>(*iter);
 		if(pFood)
 		{
 		    StartMovingTo(pFood->GetPos());
 		    m_state = TARGETING_ITEM;
-		    LOG("Found food");
 		    break;
+		}
+		else if(pBot)
+		{
+		    if(pBot->HasFlag(DEAD))
+		    {
+			StartMovingTo(pBot->GetPos());
+			m_state = TARGETING_ITEM;
+			break;
+		    }
 		}
 	    }
 	    else if(m_state == GOING_HOME)
@@ -90,7 +126,6 @@ void BugBot::Update(shared_ptr<GameObject> _this)
 		{
 		    // I'm at my teams mainbrain and I have an item. Drop it.
 		    attach(m_pItem);
-		    LOG("Dropping item");
 		    m_pItem.reset();
 		    m_state = SEARCHING;
 		    StartMovingTo(Utilities::RandomPosition());
@@ -109,7 +144,6 @@ void BugBot::Update(shared_ptr<GameObject> _this)
 		case GOING_HOME:
 		case TARGETING_ITEM:
 		    // if we get here, we didn't find anything
-		    LOG("Giving up");
 		    m_state = SEARCHING;
 		    StartMovingTo(Utilities::RandomPosition());
 		    break;
@@ -120,6 +154,18 @@ void BugBot::Update(shared_ptr<GameObject> _this)
 	    MoveStep(_this);		
 	}
 	
+	if(++m_age > Utilities::GetConfig(Utilities::BUGBOT_LIFE_EXPECTANCY)){
+	    die();
+	}
+	
+}
+
+void BugBot::die() {
+    m_flags |= (1 << DEAD);
+    if(m_pItem){
+	attach(m_pItem);
+	m_pItem.reset();
+    }
 }
 
 void BugBot::StartMovingTo(QTVector pos)

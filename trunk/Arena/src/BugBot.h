@@ -29,30 +29,40 @@ namespace BugBots {
 class BugBot : public BugBots::GameObject
 {
 public:
+    enum eFlags {
+	DEAD = 1,
+	CANNIBAL,
+	ROGUE
+    };
     BugBot(MainBrain& mainbrain);
     virtual ~BugBot();
     virtual Color GetColor() const;
     virtual void Update(shared_ptr<GameObject> _this);
     void StartMovingTo(QTVector);
+    bool HasFlag(eFlags flag) const;
+    void SetFlag(eFlags flag);
+    void RemoveFlag(eFlags flag);
 protected:
-
-	void MoveStep(shared_ptr<GameObject> _this);
-	bool AtDest() const;
+    void MoveStep(shared_ptr<GameObject> _this);
+    bool AtDest() const;
 private:
     enum eState {
 	SEARCHING,
 	TARGETING_ITEM,
 	GOING_HOME
     };
+    void die();
     shared_ptr<GameObject> m_pItem;
     QTVector m_goal;
     MainBrain& m_mainbrain;
     eState m_state;
-	int m_dx;
-	int m_dy;
-	int m_sx;
-	int m_sy;
-	int m_err;
+    int m_flags;
+    int m_dx;
+    int m_dy;
+    int m_sx;
+    int m_sy;
+    int m_err;
+    int m_age;
 };
 
 }
