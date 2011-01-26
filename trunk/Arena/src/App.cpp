@@ -29,7 +29,7 @@ int App::Run(){
 		if(m_loops % 500 == 0){
 		    double loops_per_tick = (double)m_loops / (double)SDL_GetTicks();
 		    
-		    std::cout << loops_per_tick << " loops per tick" << std::endl;
+		    //std::cout << loops_per_tick << " loops per tick" << std::endl;
 		}
 
 	}

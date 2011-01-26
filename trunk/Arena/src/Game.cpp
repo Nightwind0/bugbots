@@ -7,6 +7,7 @@
 #include <sys/time.h>
 #include <list>
 #include <iostream>
+#include "BugBot.h"
 
 using namespace BugBots;
 
@@ -234,6 +235,29 @@ void Game::OnExpose(void){
 
 
 void Game::OnMouseDown (MouseButton button, int x, int y){
+#ifndef NDEBUG
+    BugBots::QTVector point = ViewToWorld(x,y);
+    QTCircle circle(point,1.0);
+    std::list<shared_ptr<GameObject> > contacts;
+    scan_area(circle,contacts);
+    std::cout << "---------------------------------" << std::endl;
+    for(std::list<shared_ptr<GameObject> >::iterator iter= contacts.begin();
+	iter != contacts.end(); iter++)
+	{
+
+	    shared_ptr<BugBots::BugBot> pBB = std::tr1::dynamic_pointer_cast<BugBots::BugBot>(*iter);
+	    if(pBB)
+	    {
+		std::cout << "Bugbot at (" << pBB->GetPos().GetX() << ',' << pBB->GetPos().GetY() << ')' << std::endl;
+		const char * team_name = pBB->GetTeam()==BugBots::TEAM_BLUE?"Blue":"Red";
+		std::cout << "Team is " <<  team_name << std::endl;
+		if(pBB->HasFlag(BugBot::DEAD))
+		    std::cout << "(DEAD)" << std::endl;
+		std::cout << *pBB;
+	    }
+	}
+    std::cout << "---------------------------------" << std::endl;
+#endif
 }
 
 void Game::OnMouseUp   (MouseButton button, int x, int y){
@@ -251,6 +275,11 @@ void Game::OnCleanup (void){
 BugBots::QTVector Game::WorldToView(const BugBots::QTVector& pos)
 {
     return BugBots::QTVector(pos.GetX() + SCREEN_WIDTH/2, pos.GetY() + SCREEN_HEIGHT/2);
+}
+
+BugBots::QTVector Game::ViewToWorld(int x, int y)
+{
+    return BugBots::QTVector(x - SCREEN_WIDTH/2,y - SCREEN_HEIGHT/2);
 }
 
 std::ostream& Game::log()
