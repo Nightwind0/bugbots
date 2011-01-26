@@ -124,8 +124,11 @@ void BugBot::Update(shared_ptr<GameObject> _this)
 		// Don't assume theres only one mainbrain on your team
 		if(pMainBrain && (pMainBrain->GetTeam() == m_mainbrain.GetTeam()))
 		{
-		    // I'm at my teams mainbrain and I have an item. Drop it.
-		    attach(m_pItem);
+		    // I'm at my teams mainbrain and I have an item. Try to give it to the MainBrain, but if that fails drop it.
+            if(!pMainBrain->Take(m_pItem))
+            {
+                attach(m_pItem);
+            }
 		    m_pItem.reset();
 		    assert(!m_pItem);
 		    m_state = SEARCHING;

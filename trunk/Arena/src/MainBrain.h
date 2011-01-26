@@ -31,6 +31,7 @@ public:
     virtual Color GetColor() const;
     virtual void Update(shared_ptr<GameObject> _this);
     Team GetTeam() const;
+    bool Take(shared_ptr<GameObject> m_pItem);
 private:
     void spawn_bugbot();
     Color  m_color;
