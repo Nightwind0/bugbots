@@ -49,6 +49,19 @@ BugBots::Color Utilities::DefaultTeamColor (const Team& team)
     }
 }
 
+BugBots::Color Utilities::CorpseColor(const Team& team)
+{
+        switch(team){
+	case TEAM_BLUE:
+	    return CreateColor(0,0.5,0.5);
+	case TEAM_RED:
+	    return CreateColor(0.5,0.0,5);
+	default:
+	    assert(0);
+	    return CreateColor(0,0,0);
+    }
+}
+
 BugBots::QTVector Utilities::RandomPosition()
 {
     int rand_x = rand() % (SCREEN_WIDTH/2);
@@ -66,11 +79,15 @@ int Utilities::GetConfig(eConfigValue config)
 	case BUGBOT_COST:
 	    return 50;
 	case INITIAL_RESOURCES:
-	    return 25000;
+	    return 15000;
 	case FOOD_VALUE:
-	    return 35;
+	    return 25;
 	case CORPSE_VALUE:
 	    return 50;
+	case FOOD_SPAWN_FREQUENCY:
+	    return 50;
+	case BUGBOT_LIFE_EXPECTANCY:
+	    return 2000;
 	default:
 	    assert(0);
 	    return 0;

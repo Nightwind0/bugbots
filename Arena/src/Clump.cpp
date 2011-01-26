@@ -30,7 +30,7 @@ Clump::Clump():m_tics(0)
 
 void Clump::Update(shared_ptr<GameObject> _this)
 {
-    if(++m_tics % 10 == 0)
+    if(++m_tics % Utilities::GetConfig(Utilities::FOOD_SPAWN_FREQUENCY) == 0)
 	spawn(shared_ptr<GameObject>(new Food()),GetPos());
     
 }

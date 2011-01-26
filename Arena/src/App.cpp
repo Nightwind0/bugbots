@@ -26,7 +26,7 @@ int App::Run(){
 		OnLoop();
 		OnRender();
 		m_loops++;
-		if(m_loops % 100 == 0){
+		if(m_loops % 500 == 0){
 		    double loops_per_tick = (double)m_loops / (double)SDL_GetTicks();
 		    
 		    std::cout << loops_per_tick << " loops per tick" << std::endl;

@@ -50,12 +50,19 @@ void MainBrain::Update(shared_ptr<GameObject> _this)
 	{
 	    //Food * pFood = dynamic_cast<Food*>(iter->get());
 	    shared_ptr<Food> pFood = std::tr1::dynamic_pointer_cast<Food>(*iter);
+	    shared_ptr<BugBot> pBB = std::tr1::dynamic_pointer_cast<BugBot>(*iter);
 	    
 	    if(pFood)
 	    {
-			detach(*iter);
-			m_resources += Utilities::GetConfig(Utilities::FOOD_VALUE);
-			//	delete pFood;
+		detach(*iter);
+		m_resources += Utilities::GetConfig(Utilities::FOOD_VALUE);
+	    }
+	    else if(pBB)
+	    {
+		if(pBB->HasFlag(BugBot::DEAD)){
+		    detach(*iter);
+		    m_resources += Utilities::GetConfig(Utilities::CORPSE_VALUE);
+		}
 	    }
 	}
     if(m_resources >= Utilities::GetConfig(Utilities::BUGBOT_COST)){
