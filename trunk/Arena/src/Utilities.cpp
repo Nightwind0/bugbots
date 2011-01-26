@@ -81,9 +81,9 @@ int Utilities::GetConfig(eConfigValue config)
 	case INITIAL_RESOURCES:
 	    return 15000;
 	case FOOD_VALUE:
-	    return 25;
+	    return 20;
 	case CORPSE_VALUE:
-	    return 50;
+	    return 35;
 	case FOOD_SPAWN_FREQUENCY:
 	    return 50;
 	case BUGBOT_LIFE_EXPECTANCY:
