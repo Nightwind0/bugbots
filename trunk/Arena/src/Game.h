@@ -5,6 +5,7 @@
 #include "Defs.h"
 #include <mutex>
 #include <thread>
+#include "../../common/steel/src/SteelInterpreter.h"
 
 using namespace BugBots;
 
@@ -45,7 +46,8 @@ protected:
 	void remove_game_object(shared_ptr<BugBots::GameObject> pObject);
 	void traverse_circle(const BugBots::QTCircle& circle, BugBots::QTNode::OurVisitor& visitor );
 	void scan_area(const BugBots::QTCircle& circle, std::list<shared_ptr<BugBots::GameObject> > & bucket );
-	void game_object_update_thread(const std::vector<shared_ptr<BugBots::GameObject>>& objects, int start, int count);
+	void game_object_update_thread(const std::list<shared_ptr<BugBots::GameObject>>& objects);
+	void add_bifs(Steel::SteelInterpreter*);
 private:
 	friend class BugBots::GameObject;
 	void DrawPixel(BugBots::Color color, int x, int y){
@@ -61,6 +63,7 @@ private:
 	bool m_drawNodes;
 	int m_last_obj_count;
 	int m_last_ticks;
+	static const int kThreadCount = _TEAM_COUNT_+1;
 	std::mutex m_qt_mutex;
 	BugBots::QTRootNode m_quadtree;
 };

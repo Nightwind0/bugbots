@@ -37,6 +37,36 @@ BugBots::Color Food::GetColor() const
 
 void Food::Update(shared_ptr<GameObject> _this)
 {
+
+    std::list<shared_ptr<GameObject>> blips;
+    scan(QTCircle(GetPos(),1),blips);
+
+    for(std::list<shared_ptr<GameObject>>::const_iterator iter = blips.begin();
+	iter != blips.end(); iter++)
+       {
+	 shared_ptr<Food> food = std::tr1::dynamic_pointer_cast<Food>(*iter);
+	 if(food && food->GetPos() == GetPos() && food != _this){
+	   int x = GetPos().GetX();
+	   int y = GetPos().GetY();
+	   int dir = rand() % 4;
+	   switch(dir){
+	   case 0:
+	     x++;
+	     break;
+	   case 1:
+	     x--;
+	     break;
+	   case 2:
+	     y++;
+	     break;
+	   case 3:
+	     y--;
+	     break;
+	   }
+	   MoveTo(_this,QTVector(x,y));
+	 }
+       }
+    
 }
 
 

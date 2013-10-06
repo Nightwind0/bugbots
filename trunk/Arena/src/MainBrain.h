@@ -21,18 +21,26 @@
 #define MAINBRAIN_H
 
 #include "GameObject.h"
+#include "../../common/steel/src/SteelInterpreter.h"
 
 namespace BugBots{
 
-class MainBrain : public BugBots::GameObject
+
+  class TeamObject {
+  public:
+    virtual Team GetTeam() const=0;
+  };
+
+  class MainBrain : public BugBots::GameObject, public TeamObject
 {
 public:
     MainBrain(const Team& team);
     virtual Color GetColor() const;
     virtual void Update(shared_ptr<GameObject> _this);
-    Team GetTeam() const;
+    virtual Team GetTeam() const;
     bool Take(shared_ptr<GameObject> m_pItem);
 private:
+    Steel::SteelInterpreter* m_pInterpreter;
     void spawn_bugbot();
     Color  m_color;
     Team m_team;   

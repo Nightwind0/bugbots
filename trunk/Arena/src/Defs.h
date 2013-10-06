@@ -40,7 +40,8 @@ struct Color
 // Enum for now, later will likely be class
 enum Team {
     TEAM_BLUE,
-    TEAM_RED
+    TEAM_RED,
+    _TEAM_COUNT_
 };
 
 const int kGameObjectRadius = 1;

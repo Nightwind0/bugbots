@@ -29,7 +29,7 @@ namespace BugBots {
     
 
 
-class BugBot : public BugBots::GameObject
+  class BugBot : public BugBots::GameObject, public TeamObject
 {
 public:
     enum eFlags {
@@ -41,7 +41,7 @@ public:
     virtual ~BugBot();
     virtual Color GetColor() const;
     virtual void Update(shared_ptr<GameObject> _this);
-    Team GetTeam() const { return m_mainbrain.GetTeam(); };
+    virtual Team GetTeam() const { return m_mainbrain.GetTeam(); };
     void StartMovingTo(QTVector);
     bool HasFlag(eFlags flag) const;
     void SetFlag(eFlags flag);
