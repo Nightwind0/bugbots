@@ -3,7 +3,7 @@ bin_PROGRAMS = bba
 
 bba_LIBS = sdl
 
-bba_CPPFLAGS = 	$(BBA_CPPFLAGS)
+bba_CPPFLAGS = 	-std=c++0x $(BBA_CPPFLAGS)
 bba_CFLAGS = $(BBA_CPPFLAGS) 
 
 bba_SOURCES = \
