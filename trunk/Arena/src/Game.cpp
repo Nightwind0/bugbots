@@ -39,15 +39,32 @@ private:
     std::list<shared_ptr<GameObject> >& m_bucket;
 };
 
+class VectorScanner : public QTNode::OurVisitor
+{
+public:
+    VectorScanner(std::vector<shared_ptr<GameObject> > &bucket):m_bucket(bucket){
+    }
+    
+    virtual bool Visit(shared_ptr<BugBots::GameObject> object,const BugBots::QTNode* node){
+	m_bucket.push_back(object);
+	return true;
+    }
+private:
+    std::vector<shared_ptr<GameObject>>& m_bucket;
+};
 
-// class Updater : public QTNode::OurVisitor
-// {
-// public:
-//     virtual bool Visit(BugBots::GameObject* object,const BugBots::QTNode* node){
-// 	object->Update();
-// 	return true;
-//     }
-// };
+
+
+#if 0 
+ class Updater : public QTNode::OurVisitor
+ {
+ public:
+   virtual bool Visit(shared_ptr<BugBots::GameObject> object,const BugBots::QTNode* node){
+ 	object->Update(object);
+ 	return true;
+     }
+ };
+#endif
 
 template <class T>
 class Drawer : public QTNode::OurVisitor
@@ -68,6 +85,9 @@ private:
     T* m_pApp;
     DrawFunctor m_functor;
 };
+
+
+
 
 template <class T>
 class Counter : public QTNode::OurVisitor
@@ -161,12 +181,14 @@ Game::~Game(){
 
 void Game::add_game_object(shared_ptr<GameObject> pObject)
 {
+  std::unique_lock<std::mutex> lock(m_qt_mutex);
     QTCircle circle(pObject->GetPos(),kGameObjectRadius);
     m_quadtree.Add(circle,pObject);
 }
 
 void Game::move_game_object(shared_ptr<BugBots::GameObject> pObject, const QTVector& new_pos)
 {
+  std::unique_lock<std::mutex> lock(m_qt_mutex);
     m_quadtree.MoveObject(pObject,QTCircle(pObject->GetPos(),kGameObjectRadius),QTCircle(new_pos,kGameObjectRadius));
 //   m_quadtree.Remove(QTCircle(pObject->GetPos(),kGameObjectRadius),pObject);
 //   m_quadtree.Add(QTCircle(new_pos,kGameObjectRadius),pObject);
@@ -175,11 +197,13 @@ void Game::move_game_object(shared_ptr<BugBots::GameObject> pObject, const QTVec
 
 void Game::remove_game_object(shared_ptr<BugBots::GameObject> pObject)
 {
+  std::unique_lock<std::mutex> lock(m_qt_mutex);
     m_quadtree.Remove(QTCircle(pObject->GetPos(),kGameObjectRadius),pObject);
 }
 
 void Game::traverse_circle(const QTCircle& circle, QTNode::OurVisitor& visitor )
 {
+  std::unique_lock<std::mutex> lock(m_qt_mutex);
     m_quadtree.Traverse(visitor,circle);
 }
 
@@ -188,6 +212,7 @@ void Game::scan_area(const BugBots::QTCircle& circle, std::list<shared_ptr<GameO
     Scanner scanner(bucket);
     ScannerPredicate predicate(circle);
     //m_quadtree.Traverse(scanner,circle);
+    std::unique_lock<std::mutex> lock(m_qt_mutex);
     m_quadtree.Traverse(scanner,circle,predicate);
 }
 
@@ -207,35 +232,70 @@ bool Game::OnInit(){
 	add_game_object(red_brain);
 	add_game_object(clump1);
 	add_game_object(clump2);
+	m_last_obj_count = 4;
 	m_paused = false;
 	m_drawNodes = false;
+	m_last_ticks = SDL_GetTicks();
 	return true;
 }
 
 void Game::OnLoop(){
+  static int loop_count = 0;
+  static long total_ticks = 0;
+  ++loop_count;
     if(!m_paused){
-	std::list<shared_ptr<GameObject> > objects;
-	Scanner scanner(objects);
+      int start_ticks = SDL_GetTicks();
+	std::vector<shared_ptr<GameObject> > objects;
+	objects.reserve(m_last_obj_count+50);
+	VectorScanner scanner(objects);
 	m_quadtree.TraverseAll(scanner);
-	
-	
-	for(std::list<shared_ptr<GameObject> >::iterator iter = objects.begin();
+	m_last_obj_count = objects.size();
+
+#if 1	
+	const int kThreadCount = 4;
+	std::thread threads[kThreadCount];
+	const int obj_per_thread = objects.size() / kThreadCount;
+	for(int t=0;t<kThreadCount;t++){
+	  threads[t] = std::thread([this,&objects,t,obj_per_thread,kThreadCount](){
+	      int count = (t<kThreadCount-1)?obj_per_thread:(objects.size()-(((kThreadCount-1)*obj_per_thread)));
+	      this->game_object_update_thread(objects,t*obj_per_thread,count);
+	    });
+	}
+
+	for(int t=0;t<kThreadCount;t++){
+	  threads[t].join();
+	}
+
+#else
+	for(std::vector<shared_ptr<GameObject> >::iterator iter = objects.begin();
 	    iter != objects.end(); iter++)
 	    {
 		(*iter)->Update(*iter);
 	    }
+#endif
+	int end_ticks = SDL_GetTicks();
+	total_ticks += end_ticks - start_ticks;
+	if(loop_count % 300 == 0){
+	  std::cout << "Update took " << end_ticks - start_ticks << " ticks." << std::endl;
+	}
     }
 	
 }
 
 void Game::OnRender(){
+  static int frame_count = 0;
+  ++frame_count;
 	// Lock surface if needed
     if (SDL_MUSTLOCK(m_screen)) 
         if (SDL_LockSurface(m_screen) < 0) 
             return;
     
     // Ask SDL for the time in milliseconds
-    int tick = SDL_GetTicks();
+    int ticks = SDL_GetTicks();
+    int time_diff = ticks - m_last_ticks;
+    if(frame_count % 1000 == 0)
+      std::cout << time_diff << "ms since last render" << std::endl;
+    m_last_ticks = ticks;
     
     SDL_FillRect( m_screen, &m_screen->clip_rect, SDL_MapRGB( m_screen->format, 0x0, 0x0, 0x0 ) ); 
     // Draw Quadtree Nodes
@@ -352,6 +412,13 @@ BugBots::QTVector Game::ViewToWorld(int x, int y)
 std::ostream& Game::log()
 {
     return std::cout;
+}
+
+void Game::game_object_update_thread(const std::vector<shared_ptr<BugBots::GameObject>>& objects, int start, int count)
+{
+  for(int i = start; i < start+count; i++){
+    objects[i]->Update(objects[i]);
+  }
 }
 
 
