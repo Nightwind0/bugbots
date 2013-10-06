@@ -39,18 +39,23 @@ private:
     std::list<shared_ptr<GameObject> >& m_bucket;
 };
 
-class VectorScanner : public QTNode::OurVisitor
+class GameScanner : public QTNode::OurVisitor
 {
 public:
-    VectorScanner(std::vector<shared_ptr<GameObject> > &bucket):m_bucket(bucket){
-    }
+  GameScanner(std::vector<std::list<shared_ptr<GameObject>>>& buckets):m_buckets(buckets){
+  }
     
-    virtual bool Visit(shared_ptr<BugBots::GameObject> object,const BugBots::QTNode* node){
-	m_bucket.push_back(object);
-	return true;
+  virtual bool Visit(shared_ptr<BugBots::GameObject> object,const BugBots::QTNode* node){
+    TeamObject* teamobj = dynamic_cast<TeamObject*>(object.get());
+    if(teamobj){
+      m_buckets[teamobj->GetTeam()].push_back(object);
+    }else{
+      m_buckets[_TEAM_COUNT_].push_back(object);
     }
+    return true;
+  }
 private:
-    std::vector<shared_ptr<GameObject>>& m_bucket;
+  std::vector<std::list<shared_ptr<GameObject>>>& m_buckets;
 };
 
 
@@ -224,6 +229,9 @@ bool Game::OnInit(){
 	shared_ptr<GameObject> red_brain = shared_ptr<GameObject>(new MainBrain(TEAM_RED));
 	shared_ptr<GameObject> clump1 = shared_ptr<GameObject>(new Clump());
 	shared_ptr<GameObject> clump2 = shared_ptr<GameObject>(new Clump());
+	for(int t=0;t<kThreadCount;t++){
+	  // add_bifs(m_interpreters[t]);
+	}
 	blue_brain->SetPos(Utilities::RandomPosition());
 	red_brain->SetPos(Utilities::RandomPosition());
 	clump1->SetPos(Utilities::RandomPosition());
@@ -245,20 +253,16 @@ void Game::OnLoop(){
   ++loop_count;
     if(!m_paused){
       int start_ticks = SDL_GetTicks();
-	std::vector<shared_ptr<GameObject> > objects;
-	objects.reserve(m_last_obj_count+50);
-	VectorScanner scanner(objects);
+      std::vector<std::list<shared_ptr<GameObject>>> buckets(_TEAM_COUNT_+1);
+	GameScanner scanner(buckets);
 	m_quadtree.TraverseAll(scanner);
-	m_last_obj_count = objects.size();
 
 #if 1	
-	const int kThreadCount = 4;
+	assert ( kThreadCount == _TEAM_COUNT+1 );
 	std::thread threads[kThreadCount];
-	const int obj_per_thread = objects.size() / kThreadCount;
 	for(int t=0;t<kThreadCount;t++){
-	  threads[t] = std::thread([this,&objects,t,obj_per_thread,kThreadCount](){
-	      int count = (t<kThreadCount-1)?obj_per_thread:(objects.size()-(((kThreadCount-1)*obj_per_thread)));
-	      this->game_object_update_thread(objects,t*obj_per_thread,count);
+	  threads[t] = std::thread([this,&buckets,t](){
+	      this->game_object_update_thread(buckets[t]);
 	    });
 	}
 
@@ -270,7 +274,7 @@ void Game::OnLoop(){
 	for(std::vector<shared_ptr<GameObject> >::iterator iter = objects.begin();
 	    iter != objects.end(); iter++)
 	    {
-		(*iter)->Update(*iter);
+	      (*iter)->Update(*iter, m_interpreters[0]);
 	    }
 #endif
 	int end_ticks = SDL_GetTicks();
@@ -414,10 +418,14 @@ std::ostream& Game::log()
     return std::cout;
 }
 
-void Game::game_object_update_thread(const std::vector<shared_ptr<BugBots::GameObject>>& objects, int start, int count)
+void Game::add_bifs(Steel::SteelInterpreter* pInterpreter)
 {
-  for(int i = start; i < start+count; i++){
-    objects[i]->Update(objects[i]);
+}
+
+void Game::game_object_update_thread(const std::list<shared_ptr<BugBots::GameObject>>& objects)
+{
+  for(auto it = objects.begin(); it != objects.end(); it++){
+    (*it)->Update(*it);
   }
 }
 
