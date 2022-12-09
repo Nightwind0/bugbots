@@ -26,14 +26,21 @@ int App::Run(){
 	return 0;
 }
 
-void App::DrawPixel(sf::RenderTarget &target, const sf::Color &color, int x, int y)
+void App::DrawCircle(sf::RenderTarget &target, const sf::Color &color, int x, int y)
 {
-
+    static sf::CircleShape circle(2.0, 12);
+    circle.setFillColor(color);
+    circle.setOutlineThickness(0);
+    circle.setPosition(x,y);
+    target.draw(circle);
 }
 
-void App::DrawSquare(sf::RenderTarget&,sf::Color const &color, int x, int y, int size)
+void App::DrawSquare(sf::RenderTarget& target,sf::Color const &color, int x, int y, int size)
 {
-
+    sf::RectangleShape rect(sf::Vector2f(size,size));
+    rect.setFillColor(color);
+    rect.setPosition(x,y);
+    target.draw(rect);
 }
 
 

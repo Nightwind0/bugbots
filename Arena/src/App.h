@@ -43,7 +43,7 @@ public:
 
 protected:
 	void Quit();
-	void DrawPixel(sf::RenderTarget&,sf::Color const &color,int x, int y);
+	void DrawCircle(sf::RenderTarget &target, sf::Color const &color, int x, int y);
 	void DrawSquare(sf::RenderTarget&,sf::Color const &color, int x, int y, int size);
 	virtual sf::RenderWindow &GetScreen()=0;
 private:

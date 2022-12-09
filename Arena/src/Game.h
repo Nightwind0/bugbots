@@ -50,11 +50,11 @@ protected:
 	void add_bifs(Steel::SteelInterpreter*);
 private:
 	friend class BugBots::GameObject;
-	void DrawPixel(BugBots::Color color, int x, int y){
+	void DrawCircle(BugBots::Color const color, int x, int y){
         sf::Color const c(color.r, color.g, color.b, color.a);
-	    App::DrawPixel(m_screen,c,x,y);
+        App::DrawCircle(m_screen, c, x, y);
 	}
-	void DrawSquare(BugBots::Color color, int x, int y, int size){
+	void DrawSquare(BugBots::Color const color, int x, int y, int size){
         sf::Color const c(color.r, color.g, color.b, color.a);
 	    App::DrawSquare(m_screen,c,x,y,size);
 	}	

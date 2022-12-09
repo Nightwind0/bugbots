@@ -29,7 +29,7 @@ typedef Quadtree::Geometry::Square<int> QTSquare;
 struct Color
 {
     Color(unsigned char ir, unsigned char ig, unsigned char ib, unsigned char ia):r(ir),g(ig),b(ib),a(ia){}
-    Color(){}
+    Color():a(255){}
     unsigned char r;
     unsigned char g;
     unsigned char b;

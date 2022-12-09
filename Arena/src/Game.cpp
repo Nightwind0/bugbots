@@ -229,8 +229,8 @@ void Game::scan_area(const BugBots::QTCircle& circle, std::list<shared_ptr<GameO
 bool Game::OnInit(){
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     m_screen.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, desktop.bitsPerPixel), "BugBots Arena");
+    m_screen.setFramerateLimit(60);
 
-	srand(time(NULL));
 	shared_ptr<GameObject> blue_brain = shared_ptr<GameObject>(new MainBrain(Team::TEAM_BLUE));
 	shared_ptr<GameObject> red_brain = shared_ptr<GameObject>(new MainBrain(Team::TEAM_RED));
 	shared_ptr<GameObject> clump1 = shared_ptr<GameObject>(new Clump());
@@ -266,6 +266,7 @@ void Game::OnLoop(){
             // window closed
             case sf::Event::Closed:
                 m_screen.close();
+                OnExit();
                 break;
 
                 // key pressed
@@ -281,6 +282,13 @@ void Game::OnLoop(){
             case sf::Event::MouseButtonReleased:
                 OnMouseUp(event.mouseButton.button == sf::Mouse::Left ? MouseButton::MOUSE_LEFT : MouseButton::MOUSE_RIGHT, event.mouseMove.x, event.mouseMove.y);
                 break;
+
+            case sf::Event::GainedFocus:
+                OnMouseFocus();
+                break;
+            case sf::Event::LostFocus:
+                OnMouseBlur();
+                break;
                 // we don't process other types of events
             default:
                 break;
@@ -292,20 +300,12 @@ void Game::OnLoop(){
 	GameScanner scanner(buckets);
 	m_quadtree.TraverseAll(scanner);
 
-#if 0
-	assert ( kThreadCount == _TEAM_COUNT+1 );
-	std::thread threads[kThreadCount];
-	for(int t=0;t<kThreadCount;t++){
-	  threads[t] = std::thread([this,&buckets,t](){
-	      this->game_object_update_thread(buckets[t]);
-	    });
+#if 1
+	for(int t=0;t<static_cast<int>(Team::_TEAM_COUNT_);t++){
+        this->game_object_update_thread(buckets[t]);
 	}
-
-	for(int t=0;t<kThreadCount;t++){
-	  threads[t].join();
-	}
-
 #endif
+
 #if 0
 	for(std::vector<shared_ptr<GameObject> >::iterator iter = objects.begin();
 	    iter != objects.end(); iter++)
@@ -325,8 +325,8 @@ void Game::OnRender(){
     
     // Ask SDL for the time in milliseconds
 
-    m_screen.clear(sf::Color(0,128,0));
-    //SDL_FillRect( m_screen, &m_screen->clip_rect, SDL_MapRGB( m_screen->format, 0x0, 0x0, 0x0 ) );
+    m_screen.clear(sf::Color(19,19,19));
+
     // Draw Quadtree Nodes
     if(m_drawNodes)
     {
@@ -334,10 +334,10 @@ void Game::OnRender(){
         m_quadtree.TraverseNodes(nodedrawer);
     }
     // Draw to screen
-    Drawer<Game> drawer(this,&Game::DrawPixel);
+    Drawer<Game> drawer(this, &Game::DrawCircle);
     m_quadtree.TraverseAll(drawer);
     
-    Counter<Game> counter(this,&Game::DrawPixel);
+    Counter<Game> counter(this, &Game::DrawCircle);
     m_quadtree.TraverseAll(counter);
     counter.Draw();
     
