@@ -75,8 +75,8 @@ void MainBrain::Update(shared_ptr<GameObject> _this)
 bool MainBrain::Take(shared_ptr<GameObject> p_Item)
 {
     //Food * pFood = dynamic_cast<Food*>(iter->get());
-    shared_ptr<Food> pFood = std::tr1::dynamic_pointer_cast<Food>(p_Item);
-    shared_ptr<BugBot> pBB = std::tr1::dynamic_pointer_cast<BugBot>(p_Item);
+    shared_ptr<Food> pFood = std::dynamic_pointer_cast<Food>(p_Item);
+    shared_ptr<BugBot> pBB = std::dynamic_pointer_cast<BugBot>(p_Item);
     
     if(pFood)
     {
@@ -106,7 +106,7 @@ void MainBrain::spawn_bugbot()
     // (loop over radius++)
     shared_ptr<GameObject>  bb = shared_ptr<GameObject>(new BugBot(*this));
     spawn(bb,GetPos());
-    shared_ptr<BugBot> pBB = std::tr1::dynamic_pointer_cast<BugBot>(bb);
+    shared_ptr<BugBot> pBB = std::dynamic_pointer_cast<BugBot>(bb);
     pBB->StartMovingTo(Utilities::RandomPosition());
 }
 

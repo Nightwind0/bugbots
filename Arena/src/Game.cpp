@@ -48,9 +48,9 @@ public:
   virtual bool Visit(shared_ptr<BugBots::GameObject> object,const BugBots::QTNode* node){
     TeamObject* teamobj = dynamic_cast<TeamObject*>(object.get());
     if(teamobj){
-      m_buckets[teamobj->GetTeam()].push_back(object);
+      m_buckets[static_cast<int>(teamobj->GetTeam())].push_back(object);
     }else{
-      m_buckets[_TEAM_COUNT_].push_back(object);
+      m_buckets[static_cast<int>(Team::_TEAM_COUNT_)].push_back(object);
     }
     return true;
   }
@@ -105,15 +105,15 @@ public:
     
     virtual bool Visit(shared_ptr<BugBots::GameObject> object,const BugBots::QTNode* node)
     {
-        shared_ptr<BugBot> pBB = std::tr1::dynamic_pointer_cast<BugBot>(object);
+        shared_ptr<BugBot> pBB = std::dynamic_pointer_cast<BugBot>(object);
         if (pBB && !pBB->HasFlag(BugBot::DEAD))
         {
             switch (pBB->GetTeam())
             {
-                case TEAM_RED:
+                case Team::TEAM_RED:
                     m_red++;
                     break;
-                case TEAM_BLUE:
+                case Team::TEAM_BLUE:
                     m_blue++;
                     break;
                 default:
@@ -138,12 +138,12 @@ public:
 
             while(i < (int)(pBlue * SCREEN_WIDTH))
             {
-                (m_pApp->*m_functor)(Utilities::DefaultTeamColor(TEAM_BLUE),i,SCREEN_HEIGHT);
+                (m_pApp->*m_functor)(Utilities::DefaultTeamColor(Team::TEAM_BLUE),i,SCREEN_HEIGHT);
                 i++;
             }
             while (i <= SCREEN_WIDTH)
             {
-                (m_pApp->*m_functor)(Utilities::DefaultTeamColor(TEAM_RED),i,SCREEN_HEIGHT);
+                (m_pApp->*m_functor)(Utilities::DefaultTeamColor(Team::TEAM_RED),i,SCREEN_HEIGHT);
                 i++;
             }
         }
@@ -177,6 +177,10 @@ private:
 	T* m_pApp;
 	DrawFunctor m_functor;
 };
+
+void create_screen(sf::RenderWindow &target) {
+
+}
 
 Game::Game():m_quadtree(BugBots::QTNode::Square(BugBots::QTVector(0,0),QUADTREE_SIZE)),m_drawNodes(false){
 }
@@ -223,15 +227,15 @@ void Game::scan_area(const BugBots::QTCircle& circle, std::list<shared_ptr<GameO
 
 
 bool Game::OnInit(){
-	m_screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT + 1, 0, SDL_HWSURFACE | SDL_DOUBLEBUF  ); 
+    sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+    m_screen.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, desktop.bitsPerPixel), "BugBots Arena");
+
 	srand(time(NULL));
-	shared_ptr<GameObject> blue_brain = shared_ptr<GameObject>(new MainBrain(TEAM_BLUE));
-	shared_ptr<GameObject> red_brain = shared_ptr<GameObject>(new MainBrain(TEAM_RED));
+	shared_ptr<GameObject> blue_brain = shared_ptr<GameObject>(new MainBrain(Team::TEAM_BLUE));
+	shared_ptr<GameObject> red_brain = shared_ptr<GameObject>(new MainBrain(Team::TEAM_RED));
 	shared_ptr<GameObject> clump1 = shared_ptr<GameObject>(new Clump());
 	shared_ptr<GameObject> clump2 = shared_ptr<GameObject>(new Clump());
-	for(int t=0;t<kThreadCount;t++){
-	  // add_bifs(m_interpreters[t]);
-	}
+
 	blue_brain->SetPos(Utilities::RandomPosition());
 	red_brain->SetPos(Utilities::RandomPosition());
 	clump1->SetPos(Utilities::RandomPosition());
@@ -243,21 +247,52 @@ bool Game::OnInit(){
 	m_last_obj_count = 4;
 	m_paused = false;
 	m_drawNodes = false;
-	m_last_ticks = SDL_GetTicks();
+
 	return true;
 }
 
 void Game::OnLoop(){
   static int loop_count = 0;
   static long total_ticks = 0;
+
+    sf::Event event;
+
+// while there are pending events...
+    while (m_screen.pollEvent(event))
+    {
+        // check the type of the event...
+        switch (event.type)
+        {
+            // window closed
+            case sf::Event::Closed:
+                m_screen.close();
+                break;
+
+                // key pressed
+            case sf::Event::KeyPressed:
+                OnKeyDown(event);
+                break;
+            case sf::Event::KeyReleased:
+                OnKeyUp(event);
+                break;
+            case sf::Event::MouseButtonPressed:
+                OnMouseDown(event.mouseButton.button == sf::Mouse::Left ? MouseButton::MOUSE_LEFT : MouseButton::MOUSE_RIGHT, event.mouseMove.x, event.mouseMove.y);
+                break;
+            case sf::Event::MouseButtonReleased:
+                OnMouseUp(event.mouseButton.button == sf::Mouse::Left ? MouseButton::MOUSE_LEFT : MouseButton::MOUSE_RIGHT, event.mouseMove.x, event.mouseMove.y);
+                break;
+                // we don't process other types of events
+            default:
+                break;
+        }
+    }
   ++loop_count;
     if(!m_paused){
-      int start_ticks = SDL_GetTicks();
-      std::vector<std::list<shared_ptr<GameObject>>> buckets(_TEAM_COUNT_+1);
+      std::vector<std::list<shared_ptr<GameObject>>> buckets(static_cast<int>(Team::_TEAM_COUNT_)+1);
 	GameScanner scanner(buckets);
 	m_quadtree.TraverseAll(scanner);
 
-#if 1	
+#if 0
 	assert ( kThreadCount == _TEAM_COUNT+1 );
 	std::thread threads[kThreadCount];
 	for(int t=0;t<kThreadCount;t++){
@@ -270,18 +305,15 @@ void Game::OnLoop(){
 	  threads[t].join();
 	}
 
-#else
+#endif
+#if 0
 	for(std::vector<shared_ptr<GameObject> >::iterator iter = objects.begin();
 	    iter != objects.end(); iter++)
 	    {
 	      (*iter)->Update(*iter, m_interpreters[0]);
 	    }
 #endif
-	int end_ticks = SDL_GetTicks();
-	total_ticks += end_ticks - start_ticks;
-	if(loop_count % 300 == 0){
-	  std::cout << "Update took " << end_ticks - start_ticks << " ticks." << std::endl;
-	}
+
     }
 	
 }
@@ -289,19 +321,12 @@ void Game::OnLoop(){
 void Game::OnRender(){
   static int frame_count = 0;
   ++frame_count;
-	// Lock surface if needed
-    if (SDL_MUSTLOCK(m_screen)) 
-        if (SDL_LockSurface(m_screen) < 0) 
-            return;
+
     
     // Ask SDL for the time in milliseconds
-    int ticks = SDL_GetTicks();
-    int time_diff = ticks - m_last_ticks;
-    if(frame_count % 1000 == 0)
-      std::cout << time_diff << "ms since last render" << std::endl;
-    m_last_ticks = ticks;
-    
-    SDL_FillRect( m_screen, &m_screen->clip_rect, SDL_MapRGB( m_screen->format, 0x0, 0x0, 0x0 ) ); 
+
+    m_screen.clear(sf::Color(0,128,0));
+    //SDL_FillRect( m_screen, &m_screen->clip_rect, SDL_MapRGB( m_screen->format, 0x0, 0x0, 0x0 ) );
     // Draw Quadtree Nodes
     if(m_drawNodes)
     {
@@ -316,28 +341,21 @@ void Game::OnRender(){
     m_quadtree.TraverseAll(counter);
     counter.Draw();
     
-    // Unlock if needed
-    if (SDL_MUSTLOCK(m_screen)) 
-        SDL_UnlockSurface(m_screen);
-    
-    // Tell SDL to update the whole screen
-    SDL_UpdateRect(m_screen, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT); 
-    SDL_Flip(m_screen);
-    SDL_Delay(0);
+    m_screen.display();
 }
 
 void Game::OnMouseMove(int x, int y){
 }
 
-void Game::OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode){
+void Game::OnKeyDown(sf::Event const&){
 }
 
-void Game::OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode){
-  if(sym == SDLK_ESCAPE || sym ==SDLK_q)
+void Game::OnKeyUp(sf::Event const &event){
+  if(event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::Q)
      OnExit();
-  else if(sym == SDLK_p || sym == SDLK_SPACE)
+  else if(event.key.code == sf::Keyboard::P || event.key.code == sf::Keyboard::Space)
       m_paused = !m_paused;
-  else if(sym == SDLK_n)
+  else if(event.key.code == sf::Keyboard::N)
       m_drawNodes = !m_drawNodes;
 }
 
@@ -376,11 +394,11 @@ void Game::OnMouseDown (MouseButton button, int x, int y){
 	iter != contacts.end(); iter++)
 	{
 
-	    shared_ptr<BugBots::BugBot> pBB = std::tr1::dynamic_pointer_cast<BugBots::BugBot>(*iter);
+	    shared_ptr<BugBots::BugBot> pBB = std::dynamic_pointer_cast<BugBots::BugBot>(*iter);
 	    if(pBB)
 	    {
 		std::cout << "Bugbot at (" << pBB->GetPos().GetX() << ',' << pBB->GetPos().GetY() << ')' << std::endl;
-		const char * team_name = pBB->GetTeam()==BugBots::TEAM_BLUE?"Blue":"Red";
+		const char * team_name = pBB->GetTeam()==BugBots::Team::TEAM_BLUE?"Blue":"Red";
 		std::cout << "Team is " <<  team_name << std::endl;
 		if(pBB->HasFlag(BugBot::DEAD))
 		    std::cout << "(DEAD)" << std::endl;

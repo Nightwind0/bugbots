@@ -44,7 +44,7 @@ void Food::Update(shared_ptr<GameObject> _this)
     for(std::list<shared_ptr<GameObject>>::const_iterator iter = blips.begin();
 	iter != blips.end(); iter++)
        {
-	 shared_ptr<Food> food = std::tr1::dynamic_pointer_cast<Food>(*iter);
+	 shared_ptr<Food> food = std::dynamic_pointer_cast<Food>(*iter);
 	 if(food && food->GetPos() == GetPos() && food != _this){
 	   int x = GetPos().GetX();
 	   int y = GetPos().GetY();

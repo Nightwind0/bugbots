@@ -1,7 +1,8 @@
-#include "SDL/SDL.h"
+
 #include "Defs.h"
 #include "App.h"
 
+#if 0
 void render(SDL_Surface * screen){
   // Lock surface if needed
   if (SDL_MUSTLOCK(screen)) 
@@ -32,7 +33,7 @@ void render(SDL_Surface * screen){
   // Tell SDL to update the whole screen
   SDL_UpdateRect(screen, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT); 
 }
-
+#endif
 
 int main( int argc, char* args[] ) { 
 	//Start SDL 

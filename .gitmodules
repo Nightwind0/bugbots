@@ -1,0 +1,3 @@
+[submodule "Arena/steel"]
+	path = Arena/steel
+	url = git@github.com:Nightwind0/steel.git

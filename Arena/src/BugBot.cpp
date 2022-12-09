@@ -73,8 +73,8 @@ void BugBot::Update(shared_ptr<GameObject> _this)
 	    if(m_state == TARGETING_ITEM)
 	    {
 		//Food * pFood = dynamic_cast<Food*>(iter->get());
-		shared_ptr<Food> pFood = std::tr1::dynamic_pointer_cast<Food>(*iter);
-		shared_ptr<BugBot> pBot = std::tr1::dynamic_pointer_cast<BugBot>(*iter);
+		shared_ptr<Food> pFood = std::dynamic_pointer_cast<Food>(*iter);
+		shared_ptr<BugBot> pBot = std::dynamic_pointer_cast<BugBot>(*iter);
 		if(pFood)
 		{
 		    if(pFood->GetPos() == GetPos())
@@ -99,8 +99,8 @@ void BugBot::Update(shared_ptr<GameObject> _this)
 	    }
 	    else if(m_state == SEARCHING){
 		//Food * pFood = dynamic_cast<Food*>(iter->get());
-		shared_ptr<Food> pFood = std::tr1::dynamic_pointer_cast<Food>(*iter);
-		shared_ptr<BugBot> pBot = std::tr1::dynamic_pointer_cast<BugBot>(*iter);
+		shared_ptr<Food> pFood = std::dynamic_pointer_cast<Food>(*iter);
+		shared_ptr<BugBot> pBot = std::dynamic_pointer_cast<BugBot>(*iter);
 		if(pFood)
 		{
 		    StartMovingTo(pFood->GetPos());
@@ -120,7 +120,7 @@ void BugBot::Update(shared_ptr<GameObject> _this)
 	    else if(m_state == GOING_HOME)
 	    {
 		//MainBrain * pMainBrain = dynamic_cast<MainBrain*>(iter->get());
-		shared_ptr<MainBrain> pMainBrain = std::tr1::dynamic_pointer_cast<MainBrain>(*iter);
+		shared_ptr<MainBrain> pMainBrain = std::dynamic_pointer_cast<MainBrain>(*iter);
 		// Don't assume theres only one mainbrain on your team
 		if(pMainBrain && (pMainBrain->GetTeam() == m_mainbrain.GetTeam()))
 		{

@@ -7,64 +7,38 @@ App::App():m_running(true){
 }
 
 int App::Run(){
-	if(SDL_Init( SDL_INIT_EVERYTHING ) == -1){
-		return 1;
-	}
 
 	if(OnInit() == false)
 		return 1;
 
-	PickDrawFunction();
 
-	SDL_Event event;
-	m_loops = 0;
+
+    m_ticks = 0;
 
 	while(m_running){
-		while(SDL_PollEvent(&event)) {
-            ProcessEvent(&event);
-        }
 		OnLoop();
 		OnRender();
-		m_loops++;
-		if(m_loops % 500 == 0){
-		    double loops_per_tick = (double)m_loops / (double)SDL_GetTicks();
-		    
-		    //std::cout << loops_per_tick << " loops per tick" << std::endl;
-		}
-
+		m_ticks++;
 	}
 
 	OnCleanup();
-	SDL_Quit();
 
 	return 0;
 }
 
-void App::PickDrawFunction(){
-	SDL_Surface * screen = GetScreen();
+void App::DrawPixel(sf::RenderTarget &target, const sf::Color &color, int x, int y)
+{
 
-	switch(screen->format->BitsPerPixel){
-		case 8:
-			m_draw_pixel = &App::DrawPixel8;
-			break;
-		case 16:
-			m_draw_pixel = &App::DrawPixel16;
-			break;
-		case 24:
-			if(SDL_BYTEORDER == SDL_LIL_ENDIAN)
-				m_draw_pixel = &App::DrawPixel24_LittleEndian;
-			else
-				m_draw_pixel = &App::DrawPixel24_BigEndian;
-			break;
-		case 32:
-			m_draw_pixel = &App::DrawPixel32;
-			break;
-		default:
-			assert(0);
-	}
 }
 
-void App::ProcessEvent(SDL_Event *pEvent){
+void App::DrawSquare(sf::RenderTarget&,sf::Color const &color, int x, int y, int size)
+{
+
+}
+
+
+void App::ProcessEvent(sf::Event const &event){
+#if 0
 	if(!OnRawEvent(pEvent)){
 		switch(pEvent->type) {
 		case SDL_ACTIVEEVENT: {
@@ -135,6 +109,7 @@ void App::ProcessEvent(SDL_Event *pEvent){
 			}
 			break;
 								}
+#endif
 #if 0
 		case SDL_JOYAXISMOTION: {
 			OnJoyAxis(Event->jaxis.which,Event->jaxis.axis,Event->jaxis.value);
@@ -160,7 +135,7 @@ void App::ProcessEvent(SDL_Event *pEvent){
 			break;
 							  }
 #endif
-
+#if 0
 		case SDL_QUIT: {
 			OnExit();
 			break;
@@ -187,6 +162,7 @@ void App::ProcessEvent(SDL_Event *pEvent){
 				 }
 		}
 	}
+#endif
 }
 
 bool App::OnInit(){
@@ -207,10 +183,10 @@ void App::OnRender(){
 void App::OnMouseMove(int x, int y){
 }
 
-void App::OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode){
+void App::OnKeyDown(sf::Event const &event){
 }
 
-void App::OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode){
+void App::OnKeyUp(sf::Event const &event){
 }
 
 void App::OnMouseFocus(){
@@ -231,7 +207,7 @@ void App::OnResize(int w, int h){
 void App::OnUserEvent (int type, int code, void* data1, void* data2){
 }
 
-bool App::OnRawEvent(SDL_Event *){
+bool App::OnRawEvent(sf::Event const &event){
 	return false;
 }
 
@@ -249,59 +225,6 @@ void App::OnMouseUp   (MouseButton button, int x, int y){
 void App::OnExit (void){
 }
 
-void App::DrawPixel8(SDL_Surface* screen,Uint32 color, int x, int y){
-	Uint8 *bufp;
-
-	bufp = (Uint8 *)screen->pixels + y*screen->pitch + x;
-	*bufp = color;
-}
-
-void App::DrawPixel16(SDL_Surface* screen,Uint32 color, int x, int y){
-	Uint16 *bufp;
-
-	bufp = (Uint16 *)screen->pixels + y*screen->pitch/2 + x;
-	*bufp = color;
-}
-
-void App::DrawPixel24_LittleEndian(SDL_Surface* screen,Uint32 color, int x, int y){
-	Uint8 *bufp;
-	bufp = (Uint8 *)screen->pixels + y*screen->pitch + x * 3;
-
-	bufp[0] = color;
-	bufp[1] = color >> 8;
-	bufp[2] = color >> 16;	
-}
-
-void App::DrawPixel24_BigEndian(SDL_Surface* screen,Uint32 color, int x, int y){
-	Uint8 *bufp;
-	bufp = (Uint8 *)screen->pixels + y*screen->pitch + x * 3;
-	bufp[2] = color;
-	bufp[1] = color >> 8;
-	bufp[0] = color >> 16;
-}
-
-void App::DrawPixel32(SDL_Surface* screen,Uint32 color, int x, int y){
-	Uint32 *bufp;
-
-	bufp = (Uint32 *)screen->pixels + y*screen->pitch/4 + x;
-	*bufp = color;
-}
-
-void App::DrawPixel(SDL_Surface* screen,Uint32 color, int x, int y){
-	if(x>0 && y>0 && x < screen->w && y < screen->h)
-		(this->*m_draw_pixel)(screen,color,x,y);
-}
-
-void App::DrawSquare(SDL_Surface* screen,Uint32 color, int x, int y, int size){
-	int top = y - size/2;
-	int left = x - size/2;
-	for (int i = 0; i < size; i++) {
-		DrawPixel(screen,color,left+i,top); //Top
-		DrawPixel(screen,color,left,top+i); //Left
-		DrawPixel(screen,color,left+i,top+size); //Bottom
-		DrawPixel(screen,color,left+size,top+i); //Right
-	}
-}
 
 void App::Log(const char*str)
 {

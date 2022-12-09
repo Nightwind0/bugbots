@@ -26,10 +26,9 @@
 #include <ostream>
 
 namespace BugBots {
-    
 
 
-  class BugBot : public BugBots::GameObject, public TeamObject
+class BugBot : public BugBots::GameObject, public TeamObject
 {
 public:
     enum eFlags {
@@ -52,9 +51,9 @@ protected:
     bool AtDest() const;
 private:
     enum eState {
-	SEARCHING,
-	TARGETING_ITEM,
-	GOING_HOME
+	    SEARCHING,
+	    TARGETING_ITEM,
+	    GOING_HOME
     };
     void die();
     shared_ptr<GameObject> m_pItem;

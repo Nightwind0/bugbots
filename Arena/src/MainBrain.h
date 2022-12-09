@@ -21,7 +21,7 @@
 #define MAINBRAIN_H
 
 #include "GameObject.h"
-#include "../../common/steel/src/SteelInterpreter.h"
+#include "SteelInterpreter.h"
 
 namespace BugBots{
 

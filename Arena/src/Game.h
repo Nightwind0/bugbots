@@ -5,7 +5,7 @@
 #include "Defs.h"
 #include <mutex>
 #include <thread>
-#include "../../common/steel/src/SteelInterpreter.h"
+#include "SteelInterpreter.h"
 
 using namespace BugBots;
 
@@ -17,8 +17,8 @@ public:
 	virtual void OnLoop();
 	virtual void OnRender();
 	virtual void OnMouseMove(int x, int y);
-	virtual void OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode);
-	virtual void OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode);
+	virtual void OnKeyDown(sf::Event const& event);
+	virtual void OnKeyUp(sf::Event const& event);
 	virtual void OnMouseFocus();
 	virtual void OnMouseBlur();
 	virtual void OnMinimize();
@@ -38,7 +38,7 @@ public:
 	
 	std::ostream& log();
 protected:
-	virtual SDL_Surface * GetScreen()const{
+	virtual sf::RenderWindow &GetScreen() {
 		return m_screen;
 	}
 	void add_game_object(shared_ptr<BugBots::GameObject> pObject);
@@ -51,19 +51,17 @@ protected:
 private:
 	friend class BugBots::GameObject;
 	void DrawPixel(BugBots::Color color, int x, int y){
-	    Uint32 c = SDL_MapRGBA(m_screen->format,color.r,color.g,color.b,color.a);	    
+        sf::Color const c(color.r, color.g, color.b, color.a);
 	    App::DrawPixel(m_screen,c,x,y);
 	}
 	void DrawSquare(BugBots::Color color, int x, int y, int size){
-	    Uint32 c = SDL_MapRGBA(m_screen->format,color.r,color.g,color.b,color.a);	    
+        sf::Color const c(color.r, color.g, color.b, color.a);
 	    App::DrawSquare(m_screen,c,x,y,size);
 	}	
-	SDL_Surface* m_screen;
+	sf::RenderWindow m_screen;
 	bool m_paused;
 	bool m_drawNodes;
 	int m_last_obj_count;
-	int m_last_ticks;
-	static const int kThreadCount = _TEAM_COUNT_+1;
 	std::mutex m_qt_mutex;
 	BugBots::QTRootNode m_quadtree;
 };

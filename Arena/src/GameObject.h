@@ -21,7 +21,7 @@
 #define GAMEOBJECT_H
 
 #include "Defs.h"
-#include "../../common/steel/src/SteelInterpreter.h"
+#include "SteelInterpreter.h"
 
 namespace BugBots{
 

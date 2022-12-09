@@ -39,9 +39,9 @@ BugBots::Color Utilities::DefaultTeamColor (const Team& team)
 {
     // Stupid for now. Later this will be data driven
     switch(team){
-	case TEAM_BLUE:
+        case Team::TEAM_BLUE:
 	    return CreateColor(0,0,1);
-	case TEAM_RED:
+        case Team::TEAM_RED:
 	    return CreateColor(1,0,0);
 	default:
 	    assert(0);
@@ -52,9 +52,9 @@ BugBots::Color Utilities::DefaultTeamColor (const Team& team)
 BugBots::Color Utilities::CorpseColor(const Team& team)
 {
         switch(team){
-	case TEAM_BLUE:
+            case Team::TEAM_BLUE:
 	    return CreateColor(0,0.5,0.5);
-	case TEAM_RED:
+            case Team::TEAM_RED:
 	    return CreateColor(0.5,0.0,5);
 	default:
 	    assert(0);
